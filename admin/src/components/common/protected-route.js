@@ -22,4 +22,4 @@ class ProtectedRoute extends Component {
 
 export default connect(state => ({
     authorized: authorizedSelector(state)
-}))(ProtectedRoute)
+}), null, null, { pure: false })(ProtectedRoute)
