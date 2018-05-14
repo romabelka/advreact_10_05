@@ -1,14 +1,16 @@
 import firebase from 'firebase'
 
-export const appName = 'advreact-10-05'
+export const appName = process.env.REACT_APP_FIREBASE_APP_NAME
+const apiKey = process.env.REACT_APP_FIREBASE_API_KEY
+const messagingSenderId = process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID
 
 export const config = {
-    apiKey: 'AIzaSyCbMQM0eQUSQ0SuLVAu9ZNPUcm4rdbiB8U',
+    apiKey,
     authDomain: `${appName}.firebaseapp.com`,
     databaseURL: `https://${appName}.firebaseio.com`,
     projectId: appName,
     storageBucket: "",
-    messagingSenderId: "1094825197832"
+    messagingSenderId,
 }
 
 firebase.initializeApp(config)
