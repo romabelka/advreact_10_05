@@ -1,6 +1,7 @@
 import {appName} from '../config'
 import {Record} from 'immutable'
 import firebase from 'firebase'
+import { createSelector } from 'reselect'
 
 /**
  * Constants
@@ -34,7 +35,8 @@ export default function reducer(state = new ReducerRecord(), action) {
 /**
  * Selectors
  * */
-export const userSelector = state => state[appName].user
+export const userSelector = state => state[moduleName].user
+export const authorizedSelector = createSelector(userSelector, user => !!user)
 
 /**
  * Action Creators
@@ -53,3 +55,10 @@ export function signIn(email, password) {
             .then(user => dispatch({ type: SIGN_IN_SUCCESS, payload: { user } }))
     }
 }
+
+firebase.auth().onAuthStateChanged(user => {
+    user && window.store.dispatch({
+        type: SIGN_IN_SUCCESS,
+        payload: { user }
+    })
+})
