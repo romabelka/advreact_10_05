@@ -1,6 +1,5 @@
 import {appName} from '../config'
 import {Record, List} from 'immutable'
-import { createSelector } from 'reselect'
 
 /**
  * Constants
