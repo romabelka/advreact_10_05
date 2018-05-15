@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import { reduxForm, Field } from 'redux-form';
+import { reduxForm, Field, reset } from 'redux-form';
 
-class UserForm extends Component {
-  render() {
+const UserForm = ({handleSubmit}) => {
     return (
       <div>
         <h2>New user form</h2>
-        <form onSubmit={this.props.handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <div>
             <label>First name</label>
             <Field name="firstName" component="input" type="text" placeholder="First name" />
@@ -24,9 +23,12 @@ class UserForm extends Component {
         </form>
       </div>
     )
-  }
 }
 
+const form = 'userForm'
+const onSubmitSuccess = (result, dispatch) => dispatch(reset(form));
+
 export default reduxForm({
-  form: 'userForm'
+  form,
+  onSubmitSuccess
 })(UserForm)

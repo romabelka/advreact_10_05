@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import UserForm from '../components/admin/user-form'
+import { connect } from 'react-redux'
+import {addUser} from '../ducks/admin'
 
 
 class AdminPage extends Component {
@@ -16,7 +18,7 @@ class AdminPage extends Component {
         )
     }
 
-    addUser = ({firstName, lastName, email}) => console.log(firstName, lastName, email)
+    addUser = ({firstName, lastName, email}) => this.props.addUser(firstName, lastName, email)
 }
 
-export default AdminPage
+export default connect(null, {addUser})(AdminPage)
