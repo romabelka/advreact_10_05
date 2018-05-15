@@ -32,7 +32,7 @@ export default function reducer(state = new ReducerRecord(), action) {
 /**
  * Selectors
  * */
-
+export const usersSelector = state => state[moduleName].users
 /**
  * Action Creators
  * */
