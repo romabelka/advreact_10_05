@@ -1,14 +1,14 @@
 import firebase from 'firebase'
 
-export const appName = 'advreact-10-05'
+export const appName = 'advanced-react-course'
 
 export const config = {
-    apiKey: 'AIzaSyCbMQM0eQUSQ0SuLVAu9ZNPUcm4rdbiB8U',
+    apiKey: 'AIzaSyCnmXUzbO2mO8kQXy3ewm34zQCpHNxgc6Q',
     authDomain: `${appName}.firebaseapp.com`,
     databaseURL: `https://${appName}.firebaseio.com`,
     projectId: appName,
     storageBucket: "",
-    messagingSenderId: "1094825197832"
+    messagingSenderId: "188732377191"
 }
 
 firebase.initializeApp(config)
