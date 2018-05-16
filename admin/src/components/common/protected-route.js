@@ -12,6 +12,7 @@ class ProtectedRoute extends Component {
 	}
 
 	getComponent = ({ match }) => {
+		console.log(this.props)
 		return this.props.authorized ? <this.props.component match={match} /> : <h1>Not authorized</h1>
 	}
 }

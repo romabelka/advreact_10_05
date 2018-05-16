@@ -8,6 +8,7 @@ class App extends Component {
 		return (
 			<div>
 				<Switch>
+					<Route path="/" exact component={AuthPage} />
 					<Route path="/auth" component={AuthPage} />
 					<ProtectedRoute path="/admin" component={AdminPage} />
 				</Switch>

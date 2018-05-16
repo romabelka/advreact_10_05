@@ -66,6 +66,7 @@ export function signIn(email, password, onSuccess: () => {}) {
 	}
 }
 
+// убрать на следующих уроках, т.к. прокидываю авторизацию calllback'ком в signUp и signIn
 firebase.auth().onAuthStateChanged(user => {
 	user &&
 		window.store.dispatch({

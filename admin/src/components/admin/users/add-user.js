@@ -1,16 +1,17 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
-import validator from 'email-validator'
 import ErrorField from '../../common/error-field'
+import { formValidate as validate } from '../../../helpers/validate'
 
 class AddUserForm extends Component {
 	static propTypes = {}
 
 	render() {
-		const { admin } = this.props
+		const { admin, submitting, valid } = this.props
 		const userList = admin.get('usersList')
-		console.log(userList.toJS())
+
+		console.log('Users list: ', userList.toJS())
 		return (
 			<div>
 				<h2>Add user</h2>
@@ -25,23 +26,13 @@ class AddUserForm extends Component {
 						label="Password:"
 						type="password"
 					/>
-					<button type="submit">Add</button>
+					<button type="submit" disabled={submitting || !valid}>
+						Add
+					</button>
 				</form>
 			</div>
 		)
 	}
-}
-
-const validate = ({ email, password }) => {
-	const errors = {}
-
-	if (!email) errors.email = 'email is a required field'
-	if (email && !validator.validate(email)) errors.email = 'invalid email'
-
-	if (!password) errors.password = 'password is a required field'
-	if (password && password.length < 8) errors.password = 'to short'
-
-	return errors
 }
 
 const mapStateToProps = state => ({
