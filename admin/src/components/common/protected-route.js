@@ -9,7 +9,7 @@ class ProtectedRoute extends Component {
     }
 
     render() {
-        const {component, ...rest} = this.props
+        const {...rest} = this.props
         return <Route {...rest} render = {this.getComponent}/>
     }
 
