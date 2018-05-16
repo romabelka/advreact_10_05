@@ -23,5 +23,5 @@ export default function reducer(state = new ReducerRecord(), action) {
 }
 
 export function addUser(userData) {
-	return dispatch => dispatch({ type: ADD_USER_SUCCESS, payload: { user: userData } })
+	return { type: ADD_USER_SUCCESS, payload: { user: userData } }
 }
