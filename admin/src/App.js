@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import { Route } from 'react-router-dom'
 import ProtectedRoute from './components/common/protected-route'
 import AuthPage from './routes/auth'
-import AdminPage from './routes/admin'
+import AdminPage from './routes/admin/admin'
 
 class App extends Component {
     render() {
