@@ -1,6 +1,7 @@
 import {appName} from '../config'
 import {Record} from 'immutable'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/auth'
 import { createSelector } from 'reselect'
 
 /**
