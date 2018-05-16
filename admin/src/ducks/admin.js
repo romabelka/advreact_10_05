@@ -17,12 +17,22 @@ export const ReducerRecord = Record({
 })
 
 export default function reducer(state = new ReducerRecord(), action) {
+
+    switch (action.type) {
+        case ADD_PERSON:
+            return state.set('people', peopleReducer(state.people, action))
+
+        default:
+            return state
+    }
+}
+
+const peopleReducer = (state, action) => {
     const {type, payload} = action
 
-    switch (type) {
+    switch(type) {
         case ADD_PERSON:
-            return state.set('people', state.people.push(payload.person))
-
+            return state.push(payload.person)
         default:
             return state
     }
