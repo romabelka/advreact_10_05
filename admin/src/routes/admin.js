@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {NavLink, Route} from 'react-router-dom'
 import {connect} from 'react-redux'
 
-import {addMembers, membersList} from '../ducks/auth'
+import {addMembers, membersList} from '../ducks/admin'
 
 import AddMembers from '../components/admin/addMembers'
 import MemberList from '../components/admin/memberList'

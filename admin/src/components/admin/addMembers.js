@@ -42,7 +42,7 @@ const afterSumbit = (result, dispatch) => {
 }
 
 export default reduxForm({
-    form: 'auth',
+    form: 'admin',
     onSubmitSuccess: afterSumbit,
     validate
 })(AddMembers);

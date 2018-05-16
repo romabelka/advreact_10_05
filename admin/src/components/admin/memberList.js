@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {membersList} from "../../ducks/auth";
+import {membersList} from "../../ducks/admin";
 
 class MemberList extends Component {
     render() {
