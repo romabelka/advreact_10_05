@@ -1,4 +1,4 @@
-import {appName} from '../config'
+import {appName} from '../config-kirsanov'
 import {Record} from 'immutable'
 import firebase from 'firebase'
 import { createSelector } from 'reselect'

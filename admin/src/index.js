@@ -1,4 +1,4 @@
-import './config'
+import './config-kirsanov'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
