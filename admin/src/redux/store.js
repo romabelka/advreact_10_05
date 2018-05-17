@@ -1,16 +1,14 @@
 import { createStore, applyMiddleware } from 'redux'
-import thunk from 'redux-thunk'
 import logger from 'redux-logger'
 import { routerMiddleware } from 'react-router-redux'
 import createSagaMiddleware from 'redux-saga'
 import reducer from './reducer'
 import history from '../history'
-import { saga as peopleSaga } from '../ducks/people'
+import rootSaga from './saga'
 
 const sagaMiddleware = createSagaMiddleware()
 
 const enhancer = applyMiddleware(
-  thunk,
   sagaMiddleware,
   routerMiddleware(history),
   logger
@@ -18,7 +16,7 @@ const enhancer = applyMiddleware(
 
 const store = createStore(reducer, enhancer)
 
-sagaMiddleware.run(peopleSaga)
+sagaMiddleware.run(rootSaga)
 
 window.store = store
 
