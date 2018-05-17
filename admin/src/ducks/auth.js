@@ -2,6 +2,7 @@ import { appName } from '../config'
 import { Record } from 'immutable'
 import firebase from 'firebase/app'
 import { createSelector } from 'reselect'
+import { push } from 'react-router-redux'
 
 /**
  * Constants
@@ -61,9 +62,10 @@ export function signIn(email, password) {
 }
 
 firebase.auth().onAuthStateChanged((user) => {
-  user &&
-    window.store.dispatch({
-      type: SIGN_IN_SUCCESS,
-      payload: { user }
-    })
+  if (!user) return
+
+  window.store.dispatch({
+    type: SIGN_IN_SUCCESS,
+    payload: { user }
+  })
 })

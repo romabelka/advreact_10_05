@@ -2,12 +2,14 @@ import { appName } from '../config'
 import { Record, List } from 'immutable'
 import { reset } from 'redux-form'
 import { createSelector } from 'reselect'
+import { takeEvery, all, put } from 'redux-saga/effects'
 
 /**
  * Constants
  * */
 export const moduleName = 'people'
 const prefix = `${appName}/${moduleName}`
+export const ADD_PERSON_REQUEST = `${prefix}/ADD_PERSON_REQUEST`
 export const ADD_PERSON = `${prefix}/ADD_PERSON`
 
 /**
@@ -30,7 +32,7 @@ export default function reducer(state = new ReducerState(), action) {
   switch (type) {
     case ADD_PERSON:
       return state.update('entities', (entities) =>
-        entities.push(new PersonRecord(payload.person))
+        entities.push(new PersonRecord(payload))
       )
 
     default:
@@ -51,14 +53,23 @@ export const peopleSelector = createSelector(stateSelector, (state) =>
  * */
 
 export function addPerson(person) {
-  return (dispatch) => {
-    dispatch({
-      type: ADD_PERSON,
-      payload: {
-        person: { id: Date.now(), ...person }
-      }
-    })
-
-    dispatch(reset('person'))
+  return {
+    type: ADD_PERSON_REQUEST,
+    payload: { person }
   }
+}
+
+/**
+ *  Sagas
+ * */
+
+export function* addPersonSaga({ payload: { person } }) {
+  const id = Date.now()
+
+  yield put({ type: ADD_PERSON, payload: { id, ...person } })
+  yield put(reset('person'))
+}
+
+export function* saga() {
+  yield all([takeEvery(ADD_PERSON_REQUEST, addPersonSaga)])
 }
