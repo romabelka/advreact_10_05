@@ -18,6 +18,11 @@ class App extends Component {
             auth
           </NavLink>
         </div>
+        <div>
+          <NavLink to="/admin/events" activeStyle={{ color: 'red' }}>
+            events
+          </NavLink>
+        </div>
         <Route path="/auth" component={AuthPage} />
         <ProtectedRoute path="/admin" component={AdminPage} />
       </div>
