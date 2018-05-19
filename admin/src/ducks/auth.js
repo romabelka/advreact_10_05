@@ -61,16 +61,6 @@ export function signIn(email, password) {
     payload: { email, password }
   }
 }
-/*
-export function signIn(email, password) {
-  return (dispatch) => {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then((user) => dispatch({ type: SIGN_IN_SUCCESS, payload: { user } }))
-  }
-}
-*/
 
 /**
  * Sagas
