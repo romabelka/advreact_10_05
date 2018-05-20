@@ -119,11 +119,11 @@ export function* saga() {
   yield all([takeEvery(SIGN_UP_REQUEST, signUpSaga), signInSaga()])
 }
 
-// firebase.auth().onAuthStateChanged((user) => {
-//   if (!user) return
-//
-//   window.store.dispatch({
-//     type: SIGN_IN_SUCCESS,
-//     payload: { user }
-//   })
-// })
+firebase.auth().onAuthStateChanged((user) => {
+  if (!user) return
+
+  window.store.dispatch({
+    type: SIGN_IN_SUCCESS,
+    payload: { user }
+  })
+})
