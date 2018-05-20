@@ -3,7 +3,7 @@ import { Route, NavLink } from 'react-router-dom'
 import ProtectedRoute from './components/common/protected-route'
 import AuthPage from './routes/auth'
 import AdminPage from './routes/admin'
-//123
+
 class App extends Component {
   render() {
     return (
