@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import { reduxForm, Field } from 'redux-form'
-import validateEmail from 'email-validator'
 import ErrorField from '../common/error-field'
 
-const fieldsConfig = [
+export const fieldsConfig = [
   {
     name: 'title',
     type: 'text'
@@ -18,7 +17,7 @@ const fieldsConfig = [
   },
   {
     name: 'month',
-    type: 'text'
+    type: 'month'
   },
   {
     name: 'when',

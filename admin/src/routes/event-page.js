@@ -11,8 +11,10 @@ class EventPage extends Component {
     return (
       <div>
         <h2>Add new event</h2>
-        <EventsList />
         <NewPersonForm onSubmit={this.props.addEvent} />
+
+        <h2>Events list</h2>
+        <EventsList />
       </div>
     )
   }
