@@ -3,6 +3,7 @@ import { Route, NavLink } from 'react-router-dom'
 import ProtectedRoute from './components/common/protected-route'
 import AuthPage from './routes/auth'
 import AdminPage from './routes/admin'
+import EventListPage from './routes/event-list'
 
 class App extends Component {
   render() {
@@ -18,7 +19,13 @@ class App extends Component {
             auth
           </NavLink>
         </div>
+        <div>
+          <NavLink to="/events" activeStyle={{ color: 'red' }}>
+            events
+          </NavLink>
+        </div>
         <Route path="/auth" component={AuthPage} />
+        <Route path="/events" component={EventListPage} />
         <ProtectedRoute path="/admin" component={AdminPage} />
       </div>
     )
