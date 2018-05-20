@@ -8,6 +8,11 @@ class App extends Component {
   render() {
     return (
       <div>
+          <div>
+              <NavLink to="/admin/events" activeStyle={{ color: 'red' }}>
+                  events
+              </NavLink>
+          </div>
         <div>
           <NavLink to="/admin/people" activeStyle={{ color: 'red' }}>
             people
