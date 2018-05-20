@@ -2,15 +2,15 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/database'
 
-export const appName = 'advreact-10-05'
+export const appName = 'react-advanced-nikolay'
 
 export const config = {
-  apiKey: 'AIzaSyCbMQM0eQUSQ0SuLVAu9ZNPUcm4rdbiB8U',
+  apiKey: 'AIzaSyAAwv7Zb7tJbu5VjbyI6O7kQ06nm4BAiIs',
   authDomain: `${appName}.firebaseapp.com`,
   databaseURL: `https://${appName}.firebaseio.com`,
   projectId: appName,
-  storageBucket: '',
-  messagingSenderId: '1094825197832'
+  storageBucket: `${appName}.appspot.com`,
+  messagingSenderId: '806752161129'
 }
 
 firebase.initializeApp(config)
