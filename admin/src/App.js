@@ -14,6 +14,11 @@ class App extends Component {
           </NavLink>
         </div>
         <div>
+          <NavLink to="/admin/events" activeStyle={{ color: 'red' }}>
+            events
+          </NavLink>
+        </div>
+        <div>
           <NavLink to="/auth/sign-in" activeStyle={{ color: 'red' }}>
             auth
           </NavLink>
