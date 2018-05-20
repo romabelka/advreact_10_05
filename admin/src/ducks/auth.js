@@ -78,6 +78,7 @@ export function signIn(email, password) {
 
 export function* signUpSaga({ payload: { email, password } }) {
   const auth = firebase.auth()
+
   try {
     const user = yield call(
       [auth, auth.createUserWithEmailAndPassword],
