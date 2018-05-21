@@ -8,11 +8,11 @@ import {
 } from '../../ducks/events'
 import Loader from '../common/loader'
 
-class EventsTable extends Component {
+export class EventsTable extends Component {
   static propTypes = {}
 
   componentDidMount() {
-    this.props.fetchAllEvents()
+    this.props.fetchAllEvents && this.props.fetchAllEvents()
   }
 
   render() {
@@ -27,12 +27,20 @@ class EventsTable extends Component {
   getRows = () => this.props.events.map(this.getRow)
 
   getRow = (event) => (
-    <tr key={event.uid}>
+    <tr
+      key={event.uid}
+      className="test--event-list_item"
+      onClick={this.handleRowClick(event)}
+    >
       <td>{event.title}</td>
       <td>{event.when}</td>
       <td>{event.where}</td>
     </tr>
   )
+
+  handleRowClick = (event) => () => {
+    this.props.handleSelect(event.uid)
+  }
 }
 
 export default connect(
