@@ -1,6 +1,6 @@
 import { all, takeEvery, put, call } from 'redux-saga/effects'
 import { appName } from '../config'
-import { Record, List, OrderedMap } from 'immutable'
+import { Record, OrderedSet, OrderedMap } from 'immutable'
 import firebase from 'firebase/app'
 import { createSelector } from 'reselect'
 import { fbToEntities } from './utils'
@@ -14,6 +14,7 @@ const prefix = `${appName}/${moduleName}`
 export const FETCH_ALL_REQUEST = `${prefix}/FETCH_ALL_REQUEST`
 export const FETCH_ALL_START = `${prefix}/FETCH_ALL_START`
 export const FETCH_ALL_SUCCESS = `${prefix}/FETCH_ALL_SUCCESS`
+export const TOGGLE_SELECTION = `${prefix}/TOGGLE_SELECTION`
 
 /**
  * Reducer
@@ -21,7 +22,8 @@ export const FETCH_ALL_SUCCESS = `${prefix}/FETCH_ALL_SUCCESS`
 export const ReducerRecord = Record({
   loading: false,
   loaded: false,
-  entities: new OrderedMap([])
+  selected: new OrderedSet(),
+  entities: new OrderedMap()
 })
 
 export const EventRecord = Record({
@@ -46,6 +48,15 @@ export default function reducer(state = new ReducerRecord(), action) {
         .set('loading', false)
         .set('loaded', true)
         .set('entities', fbToEntities(payload, EventRecord))
+
+    case TOGGLE_SELECTION:
+      return state.update(
+        'selected',
+        (selected) =>
+          selected.has(payload.uid)
+            ? selected.remove(payload.uid)
+            : selected.add(payload.uid)
+      )
 
     default:
       return state
@@ -73,6 +84,16 @@ export const eventListSelector = createSelector(entitiesSelector, (entities) =>
   entities.valueSeq().toArray()
 )
 
+export const selectedIdsSelector = createSelector(stateSelector, (state) =>
+  state.selected.toArray()
+)
+
+export const selectedEventsSelector = createSelector(
+  entitiesSelector,
+  selectedIdsSelector,
+  (entities, ids) => ids.map((id) => entities.get(id))
+)
+
 /**
  * Action Creators
  * */
@@ -80,6 +101,13 @@ export const eventListSelector = createSelector(entitiesSelector, (entities) =>
 export function fetchAllEvents() {
   return {
     type: FETCH_ALL_REQUEST
+  }
+}
+
+export function toggleSelection(uid) {
+  return {
+    type: TOGGLE_SELECTION,
+    payload: { uid }
   }
 }
 
