@@ -11,6 +11,11 @@ import Loader from '../common/loader'
 import { Table, Column } from 'react-virtualized'
 import 'react-virtualized/styles.css'
 
+export const width = 900
+export const columnWidth = 300
+export const height = 420
+export const rowHeight = 40
+
 export class EventsTable extends Component {
   static propTypes = {}
 
@@ -24,20 +29,35 @@ export class EventsTable extends Component {
     return (
       <Table
         rowCount={events.length}
-        width={400}
-        height={300}
+        width={width}
+        height={height}
         rowGetter={this.rowGetter}
-        rowHeight={50}
+        rowHeight={rowHeight}
         overscanRowCount={0}
       >
-        <Column dataKey="title" width={300} />
-        <Column dataKey="where" width={300} />
-        <Column dataKey="when" width={300} />
+        <Column
+          cellRenderer={({ cellData, rowData }) => (
+            <div
+              className="test--event-list_item"
+              onClick={this.handleRowClick(rowData)}
+            >
+              {cellData}
+            </div>
+          )}
+          dataKey="title"
+          width={columnWidth}
+        />
+        <Column dataKey="where" width={columnWidth} />
+        <Column dataKey="when" width={columnWidth} />
       </Table>
     )
   }
 
   rowGetter = ({ index }) => this.props.events[index]
+
+  handleRowClick = (event) => () => {
+    this.props.handleSelect(event.uid)
+  }
 }
 
 export default connect(
