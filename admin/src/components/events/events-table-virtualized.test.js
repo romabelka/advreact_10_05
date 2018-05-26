@@ -3,7 +3,8 @@ import {
   EventsTable,
   width,
   height,
-  rowHeight
+  rowHeight,
+  columnWidth
 } from './events-table-virtualized'
 import { shallow, mount } from 'enzyme'
 import { Table, Column } from 'react-virtualized'
@@ -31,6 +32,23 @@ describe('EventsVirtualizedTable', () => {
     expect(container.find('.test--event-list_item').length).toEqual(
       Math.round(height / rowHeight) + defaultOverscanRowCount
     )
+  })
+
+  it('should render 3 colunms', () => {
+    const container = shallow(<EventsTable events={events} />)
+
+    expect(container.children().length).toEqual(3)
+  })
+
+  it('should render first column with key title', () => {
+    const container = shallow(<EventsTable events={events} />)
+
+    expect(
+      container
+        .children()
+        .find({ dataKey: 'title' })
+        .exists()
+    ).toEqual(true)
   })
 
   it('should fetch all events', (done) => {
