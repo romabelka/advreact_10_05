@@ -29,6 +29,7 @@ export class EventsTable extends Component {
         rowGetter={this.rowGetter}
         rowHeight={50}
         overscanRowCount={0}
+        onRowClick={this.handleRowClick}
       >
         <Column dataKey="title" width={300} />
         <Column dataKey="where" width={300} />
@@ -38,6 +39,10 @@ export class EventsTable extends Component {
   }
 
   rowGetter = ({ index }) => this.props.events[index]
+
+  handleRowClick = ({ event, index, rowData }) => {
+    this.props.handleSelect(rowData.uid)
+  }
 }
 
 export default connect(
