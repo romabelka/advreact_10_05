@@ -1,11 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {
-  fetchAllEvents,
+  fetchEventsWithPagination,
   toggleSelection as handleSelect,
   eventListSelector,
   loadedSelector,
-  loadingSelector
+  loadingSelector,
+  loadedRowCount,
+  loadingRowCount,
+  loadedRowsMap,
+  clearData,
+  changeLoadingInfo
 } from '../../ducks/events'
 import Loader from '../common/loader'
 import { InfiniteLoader, AutoSizer, List } from 'react-virtualized'
@@ -20,15 +25,16 @@ const STATUS_LOADING = 1
 const STATUS_LOADED = 2
 
 export class EventsTable extends Component {
-  state = {
-    loadedRowCount: 0,
-    loadedRowsMap: {},
-    loadingRowCount: 0
-  }
+  // state = {
+  //   // loadedRowCount: 0,
+  //   loadedRowsMap: {}
+  //   // loadingRowCount: 0
+  // }
   static propTypes = {}
 
   componentDidMount() {
-    this.props.fetchAllEvents && this.props.fetchAllEvents()
+    this.props.fetchEventsWithPagination &&
+      this.props.fetchEventsWithPagination()
   }
 
   componentWillUnmount() {
@@ -38,134 +44,114 @@ export class EventsTable extends Component {
   }
 
   render() {
-    const { loading, events } = this.props
-    const { loadedRowCount, loadingRowCount } = this.state
-    if (loading) return <Loader />
+    const {
+      loading,
+      // loaded,
+      events,
+      clearData,
+      loadedRowCount,
+      loadingRowCount
+    } = this.props
+
     return (
       <div>
         <div>
-          <button onClick={this._clearData}>Flush Cached Data</button>
+          <button onClick={clearData}>Flush Cached Data</button>
+          <br />
+          <br />
 
           <div>
             {loadingRowCount} loading, {loadedRowCount} loaded
           </div>
+          <br />
+          <hr />
         </div>
-
-        <InfiniteLoader
-          isRowLoaded={this._isRowLoaded}
-          loadMoreRows={this._loadMoreRows}
-          rowCount={events.length}
-        >
-          {({ onRowsRendered, registerChild }) => (
-            <AutoSizer disableHeight>
-              {({ width }) => (
-                <List
-                  ref={registerChild}
-                  // className={styles.List}
-                  height={height}
-                  onRowsRendered={onRowsRendered}
-                  rowCount={events.length}
-                  rowHeight={rowHeight}
-                  rowRenderer={this._rowRenderer}
-                  width={width}
-                />
-              )}
-            </AutoSizer>
-          )}
-          {/* <Table
-                rowCount={events.length}
-                width={width}
-                height={height}
-                rowGetter={this.rowGetter}
-                rowHeight={rowHeight}
-                overscanRowCount={0}
-              >
-                <Column
-                  cellRenderer={({ cellData, rowData }) => (
-                    <div
-                      className="test--event-list_item"
-                      onClick={this.handleRowClick(rowData)}
-                    >
-                      {cellData}
-                    </div>
-                  )}
-                  dataKey="title"
-                  width={columnWidth}
-                />
-                <Column dataKey="where" width={columnWidth} />
-                <Column dataKey="when" width={columnWidth} />
-              </Table> */}
-        </InfiniteLoader>
+        {loading && !loadedRowCount ? (
+          <Loader />
+        ) : (
+          <InfiniteLoader
+            isRowLoaded={this._isRowLoaded}
+            loadMoreRows={this._loadMoreRows}
+            rowCount={events.length}
+          >
+            {({ onRowsRendered, registerChild }) => (
+              <AutoSizer disableHeight>
+                {({ width }) => (
+                  <List
+                    ref={registerChild}
+                    height={height}
+                    onRowsRendered={onRowsRendered}
+                    rowCount={events.length}
+                    rowHeight={rowHeight}
+                    rowRenderer={this._rowRenderer}
+                    width={width}
+                  />
+                )}
+              </AutoSizer>
+            )}
+          </InfiniteLoader>
+        )}
       </div>
     )
   }
 
-  // rowGetter = ({ index }) => this.props.events[index]
-  //
-  // handleRowClick = (event) => () => {
-  //   this.props.handleSelect(event.uid)
-  // }
+  handleRowClick = (event) => () => {
+    this.props.handleSelect(event.uid)
+  }
 
   _timeoutIdMap = () => {}
 
-  _clearData = () => {
-    this.setState({
-      loadedRowCount: 0,
-      loadedRowsMap: {},
-      loadingRowCount: 0
-    })
-  }
-
   _isRowLoaded = ({ index }) => {
-    const { loadedRowsMap } = this.state
+    const { loadedRowsMap } = this.props
     return !!loadedRowsMap[index] // STATUS_LOADING or STATUS_LOADED
   }
 
   _loadMoreRows = ({ startIndex, stopIndex }) => {
-    const { loadedRowsMap, loadingRowCount } = this.state
+    const { loadedRowsMap, loadingRowCount } = this.props
     const increment = stopIndex - startIndex + 1
 
     for (var i = startIndex; i <= stopIndex; i++) {
       loadedRowsMap[i] = STATUS_LOADING
     }
 
-    this.setState({
+    this.props.changeLoadingInfo({
       loadingRowCount: loadingRowCount + increment
     })
 
     const timeoutId = setTimeout(() => {
-      const { loadedRowCount, loadingRowCount } = this.state
-
+      const { loadedRowCount, loadingRowCount } = this.props
       delete this._timeoutIdMap[timeoutId]
 
       for (var i = startIndex; i <= stopIndex; i++) {
         loadedRowsMap[i] = STATUS_LOADED
       }
 
-      this.setState({
+      this.props.changeLoadingInfo({
         loadingRowCount: loadingRowCount - increment,
         loadedRowCount: loadedRowCount + increment
       })
 
-      promiseResolver()
+      console.log({ size: loadingRowCount, startIndex, stopIndex })
+
+      return promiseResolver()
     }, 1000 + Math.round(Math.random() * 2000))
 
     this._timeoutIdMap[timeoutId] = true
 
-    let promiseResolver
+    let promiseResolver = () => {
+      this.props.fetchEventsWithPagination()
+    }
 
     return new Promise((resolve) => {
-      promiseResolver = resolve
+      resolve(promiseResolver)
     })
   }
 
   _rowRenderer = ({ index, key, style }) => {
-    const { events } = this.props
-    const { loadedRowsMap } = this.state
+    const { events, loadedRowsMap } = this.props
 
     const row = events[index]
     let content
-    // console.log(row.size)
 
     if (loadedRowsMap[index] === STATUS_LOADED) {
       content = row.title
@@ -173,7 +159,11 @@ export class EventsTable extends Component {
       content = <div style={{ width: 100 }} />
     }
 
-    return <div key={key}>{content}</div>
+    return (
+      <div key={key} style={style} onClick={this.handleRowClick(row)}>
+        {content}
+      </div>
+    )
   }
 }
 
@@ -181,7 +171,10 @@ export default connect(
   (state) => ({
     events: eventListSelector(state),
     loading: loadingSelector(state),
-    loaded: loadedSelector(state)
+    loaded: loadedSelector(state),
+    loadedRowCount: loadedRowCount(state),
+    loadingRowCount: loadingRowCount(state),
+    loadedRowsMap: loadedRowsMap(state)
   }),
-  { fetchAllEvents, handleSelect }
+  { fetchEventsWithPagination, handleSelect, clearData, changeLoadingInfo }
 )(EventsTable)
