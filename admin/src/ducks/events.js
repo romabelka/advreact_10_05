@@ -22,6 +22,7 @@ export const TOGGLE_SELECTION = `${prefix}/TOGGLE_SELECTION`
 export const ReducerRecord = Record({
   loading: false,
   loaded: false,
+  lastUID: null,
   selected: new OrderedSet(),
   entities: new OrderedMap()
 })
@@ -44,10 +45,13 @@ export default function reducer(state = new ReducerRecord(), action) {
       return state.set('loading', true)
 
     case FETCH_ALL_SUCCESS:
+      const entries = fbToEntities(payload, EventRecord)
+      const lastUID = entries.last().get('uid')
       return state
         .set('loading', false)
         .set('loaded', true)
-        .set('entities', fbToEntities(payload, EventRecord))
+        .set('lastUID', lastUID)
+        .set('entities', state.get('entities').merge(entries))
 
     case TOGGLE_SELECTION:
       return state.update(
@@ -83,6 +87,10 @@ export const loadedSelector = createSelector(
 export const eventListSelector = createSelector(entitiesSelector, (entities) =>
   entities.valueSeq().toArray()
 )
+export const lastUIDSelector = createSelector(
+  stateSelector,
+  (state) => state.lastUID
+)
 
 export const selectedIdsSelector = createSelector(stateSelector, (state) =>
   state.selected.toArray()
@@ -98,9 +106,10 @@ export const selectedEventsSelector = createSelector(
  * Action Creators
  * */
 
-export function fetchAllEvents() {
+export function fetchAllEvents(uid) {
   return {
-    type: FETCH_ALL_REQUEST
+    type: FETCH_ALL_REQUEST,
+    payload: { uid }
   }
 }
 
@@ -115,8 +124,14 @@ export function toggleSelection(uid) {
  * Sagas
  * */
 
-export function* fetchAllSaga() {
-  const ref = firebase.database().ref('events')
+export function* fetchAllSaga(payload) {
+  const { uid } = payload.payload
+  const ref = firebase
+    .database()
+    .ref('events')
+    .orderByKey()
+    .startAt(uid ? uid.slice(0, -1) + '-' : '-')
+    .limitToFirst(10)
 
   yield put({
     type: FETCH_ALL_START
