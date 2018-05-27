@@ -184,9 +184,11 @@ export function* fetchAllSaga() {
 }
 export function* fetchWithPaginationSaga({ payload }) {
   const { startAt, endAt } = payload
-  console.log('TEST', startAt, endAt)
-  const ref = firebase.database().ref('events')
-  // .orderByChild('key')
+  console.log('pagination', startAt, endAt)
+  const ref = firebase
+    .database()
+    .ref('events')
+    .orderByKey()
   // .startAt(startAt)
   // .endAt(endAt)
 
@@ -195,7 +197,7 @@ export function* fetchWithPaginationSaga({ payload }) {
   })
 
   const snapshot = yield call([ref, ref.once], 'value')
-  console.log('snapshot', snapshot)
+  console.log('snapshot', snapshot.val())
 
   yield put({
     type: FETCH_ALL_SUCCESS,

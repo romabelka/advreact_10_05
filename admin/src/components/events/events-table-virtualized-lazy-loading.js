@@ -38,7 +38,7 @@ export class EventsTable extends Component {
   }
 
   componentWillUnmount() {
-    Object.keys(this._timeoutIdMap).forEach((timeoutId) => {
+    Object.keys(this.timeoutIdMap).forEach((timeoutId) => {
       clearTimeout(timeoutId)
     })
   }
@@ -70,8 +70,8 @@ export class EventsTable extends Component {
           <Loader />
         ) : (
           <InfiniteLoader
-            isRowLoaded={this._isRowLoaded}
-            loadMoreRows={this._loadMoreRows}
+            isRowLoaded={this.isRowLoaded}
+            loadMoreRows={this.loadMoreRows}
             rowCount={events.length}
           >
             {({ onRowsRendered, registerChild }) => (
@@ -83,7 +83,7 @@ export class EventsTable extends Component {
                     onRowsRendered={onRowsRendered}
                     rowCount={events.length}
                     rowHeight={rowHeight}
-                    rowRenderer={this._rowRenderer}
+                    rowRenderer={this.rowRenderer}
                     width={width}
                   />
                 )}
@@ -99,14 +99,14 @@ export class EventsTable extends Component {
     this.props.handleSelect(event.uid)
   }
 
-  _timeoutIdMap = () => {}
+  timeoutIdMap = () => {}
 
-  _isRowLoaded = ({ index }) => {
+  isRowLoaded = ({ index }) => {
     const { loadedRowsMap } = this.props
     return !!loadedRowsMap[index] // STATUS_LOADING or STATUS_LOADED
   }
 
-  _loadMoreRows = ({ startIndex, stopIndex }) => {
+  loadMoreRows = ({ startIndex, stopIndex }) => {
     const { loadedRowsMap, loadingRowCount } = this.props
     const increment = stopIndex - startIndex + 1
 
@@ -120,7 +120,7 @@ export class EventsTable extends Component {
 
     const timeoutId = setTimeout(() => {
       const { loadedRowCount, loadingRowCount } = this.props
-      delete this._timeoutIdMap[timeoutId]
+      delete this.timeoutIdMap[timeoutId]
 
       for (var i = startIndex; i <= stopIndex; i++) {
         loadedRowsMap[i] = STATUS_LOADED
@@ -131,23 +131,24 @@ export class EventsTable extends Component {
         loadedRowCount: loadedRowCount + increment
       })
 
-      console.log({ size: loadingRowCount, startIndex, stopIndex })
-
-      return promiseResolver()
+      promiseResolver({
+        size: loadingRowCount,
+        startAt: startIndex,
+        endAt: stopIndex
+      })
     }, 1000 + Math.round(Math.random() * 2000))
 
-    this._timeoutIdMap[timeoutId] = true
+    this.timeoutIdMap[timeoutId] = true
 
-    let promiseResolver = () => {
-      this.props.fetchEventsWithPagination()
-    }
+    let promiseResolver
 
     return new Promise((resolve) => {
-      resolve(promiseResolver)
+      promiseResolver = (pagination) =>
+        resolve(this.props.fetchEventsWithPagination(pagination))
     })
   }
 
-  _rowRenderer = ({ index, key, style }) => {
+  rowRenderer = ({ index, key, style }) => {
     const { events, loadedRowsMap } = this.props
 
     const row = events[index]
