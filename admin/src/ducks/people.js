@@ -61,11 +61,11 @@ export const entitiesSelector = createSelector(
 export const peopleSelector = createSelector(entitiesSelector, (entities) =>
   entities.valueSeq().toArray()
 )
-export const idSelector = (_, props) => props.id
+export const idSelector = (_, props) => props.uid
 export const personSelector = createSelector(
   entitiesSelector,
   idSelector,
-  (entities, id) => entities.get(id)
+  (entities, uid) => entities.get(uid)
 )
 
 /**

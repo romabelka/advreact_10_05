@@ -3,6 +3,7 @@ import { Route, NavLink } from 'react-router-dom'
 import ProtectedRoute from './components/common/protected-route'
 import AuthPage from './routes/auth'
 import AdminPage from './routes/admin'
+import CustomDragLayer from './components/common/custom-drag-layer'
 
 class App extends Component {
   render() {
@@ -25,6 +26,7 @@ class App extends Component {
         </div>
         <Route path="/auth" component={AuthPage} />
         <ProtectedRoute path="/admin" component={AdminPage} />
+        <CustomDragLayer />
       </div>
     )
   }
