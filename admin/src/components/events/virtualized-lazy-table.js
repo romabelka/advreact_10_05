@@ -58,7 +58,7 @@ export class EventLazyTable extends Component {
     return this.props.events[index]
   }
 
-  handleRowClick = (rowData) => {
+  handleRowClick = ({ rowData }) => {
     const { toggleSelection } = this.props
     toggleSelection && toggleSelection(rowData.uid)
   }

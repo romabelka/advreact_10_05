@@ -3,7 +3,7 @@ import { Record, OrderedMap } from 'immutable'
 import { createSelector } from 'reselect'
 import { put, call, all, takeEvery } from 'redux-saga/effects'
 import { reset } from 'redux-form'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
 import { fbToEntities } from './utils'
 
 /**
