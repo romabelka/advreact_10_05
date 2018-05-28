@@ -9,6 +9,11 @@ class App extends Component {
     return (
       <div>
         <div>
+          <NavLink to="/admin/events" activeStyle={{ color: 'red' }}>
+            events
+          </NavLink>
+        </div>
+        <div>
           <NavLink to="/admin/people" activeStyle={{ color: 'red' }}>
             people
           </NavLink>
