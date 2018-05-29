@@ -1,7 +1,7 @@
 import { appName } from '../config'
 import { Record, OrderedMap } from 'immutable'
 import { createSelector } from 'reselect'
-import { put, call, all, takeEvery } from 'redux-saga/effects'
+import { put, call, all, takeEvery, select } from 'redux-saga/effects'
 import { reset } from 'redux-form'
 import firebase from 'firebase/app'
 import { fbToEntities } from './utils'
@@ -15,10 +15,16 @@ export const ADD_PERSON = `${prefix}/ADD_PERSON`
 export const ADD_PERSON_START = `${prefix}/ADD_PERSON_START`
 export const ADD_PERSON_SUCCESS = `${prefix}/ADD_PERSON_SUCCESS`
 
+export const DELETE_PERSON = `${prefix}/DELETE_PERSON`
+export const DELETE_PERSON_START = `${prefix}/DELETE_PERSON_START`
+export const DELETE_PERSON_SUCCESS = `${prefix}/DELETE_PERSON_SUCCESS`
+
 export const FETCH_ALL_REQUEST = `${prefix}/FETCH_ALL_REQUEST`
 export const FETCH_ALL_SUCCESS = `${prefix}/FETCH_ALL_SUCCESS`
 
 export const ADD_EVENT = `${prefix}/ADD_EVENT`
+export const ADD_EVENT_START = `${prefix}/ADD_EVENT_START`
+export const ADD_EVENT_SUCCESS = `${prefix}/ADD_EVENT_SUCCESS`
 
 /**
  * Reducer
@@ -41,6 +47,15 @@ export default function reducer(state = new ReducerState(), action) {
   switch (type) {
     case ADD_PERSON_SUCCESS:
       return state.setIn(['entities', payload.uid], new PersonRecord(payload))
+
+    case DELETE_PERSON_SUCCESS:
+      return state.deleteIn(['entities', payload.uid])
+
+    case ADD_EVENT_SUCCESS:
+      return state.updateIn(
+        ['entities', payload.personUid, 'events'],
+        (events) => [...events, payload.eventUid]
+      )
 
     case FETCH_ALL_SUCCESS:
       return state.set('entities', fbToEntities(payload, PersonRecord))
@@ -67,6 +82,10 @@ export const personSelector = createSelector(
   idSelector,
   (entities, uid) => entities.get(uid)
 )
+export const personEventsSelector = createSelector(
+  personSelector,
+  (person) => person.events
+)
 
 /**
  * Action Creators
@@ -76,6 +95,13 @@ export function addPerson(person) {
   return {
     type: ADD_PERSON,
     payload: { person }
+  }
+}
+
+export function deletePerson(uid) {
+  return {
+    type: DELETE_PERSON,
+    payload: { uid }
   }
 }
 
@@ -114,6 +140,22 @@ export function* addPersonSaga(action) {
   yield put(reset('person'))
 }
 
+export function* deletePersonSaga({ payload: { uid } }) {
+  yield put({
+    type: DELETE_PERSON_START,
+    payload: { uid }
+  })
+
+  const personRef = firebase.database().ref(`people/${uid}`)
+
+  yield call([personRef, personRef.remove])
+
+  yield put({
+    type: DELETE_PERSON_SUCCESS,
+    payload: { uid }
+  })
+}
+
 export function* fetchAllSaga() {
   const peopleRef = firebase.database().ref('people')
 
@@ -125,9 +167,29 @@ export function* fetchAllSaga() {
   })
 }
 
+export function* addEventToPersonSaga({ payload: { eventUid, personUid } }) {
+  yield put({
+    type: ADD_EVENT_START,
+    payload: { eventUid, personUid }
+  })
+
+  const eventsRef = firebase.database().ref(`people/${personUid}/events`)
+
+  const events = yield select(personEventsSelector, { uid: personUid })
+
+  yield call([eventsRef, eventsRef.set], [...events, eventUid])
+
+  yield put({
+    type: ADD_EVENT_SUCCESS,
+    payload: { eventUid, personUid }
+  })
+}
+
 export const saga = function*() {
   yield all([
     takeEvery(ADD_PERSON, addPersonSaga),
-    takeEvery(FETCH_ALL_REQUEST, fetchAllSaga)
+    takeEvery(DELETE_PERSON, deletePersonSaga),
+    takeEvery(FETCH_ALL_REQUEST, fetchAllSaga),
+    takeEvery(ADD_EVENT, addEventToPersonSaga)
   ])
 }

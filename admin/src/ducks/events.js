@@ -21,6 +21,10 @@ export const FETCH_LAZY_SUCCESS = `${prefix}/FETCH_LAZY_SUCCESS`
 
 export const TOGGLE_SELECTION = `${prefix}/TOGGLE_SELECTION`
 
+export const DELETE_EVENT = `${prefix}/DELETE_EVENT`
+export const DELETE_EVENT_START = `${prefix}/DELETE_EVENT_START`
+export const DELETE_EVENT_SUCCESS = `${prefix}/DELETE_EVENT_SUCCESS`
+
 /**
  * Reducer
  * */
@@ -69,6 +73,9 @@ export default function reducer(state = new ReducerRecord(), action) {
             ? selected.remove(payload.uid)
             : selected.add(payload.uid)
       )
+
+    case DELETE_EVENT_SUCCESS:
+      return state.deleteIn(['entities', payload.uid])
 
     default:
       return state
@@ -129,6 +136,13 @@ export function fetchLazy() {
   }
 }
 
+export function deleteEvent(uid) {
+  return {
+    type: DELETE_EVENT,
+    payload: { uid }
+  }
+}
+
 /**
  * Sagas
  * */
@@ -179,6 +193,26 @@ export const fetchLazySaga = function*() {
   }
 }
 
+export function* deleteEventSaga({ payload: { uid } }) {
+  yield put({
+    type: DELETE_EVENT_START,
+    payload: { uid }
+  })
+
+  const eventRef = firebase.database().ref(`events/${uid}`)
+
+  yield call([eventRef, eventRef.remove])
+
+  yield put({
+    type: DELETE_EVENT_SUCCESS,
+    payload: { uid }
+  })
+}
+
 export function* saga() {
-  yield all([takeEvery(FETCH_ALL_REQUEST, fetchAllSaga), fetchLazySaga()])
+  yield all([
+    takeEvery(FETCH_ALL_REQUEST, fetchAllSaga),
+    fetchLazySaga(),
+    takeEvery(DELETE_EVENT, deleteEventSaga)
+  ])
 }
