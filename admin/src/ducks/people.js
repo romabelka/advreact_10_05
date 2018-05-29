@@ -15,6 +15,10 @@ export const ADD_PERSON = `${prefix}/ADD_PERSON`
 export const ADD_PERSON_START = `${prefix}/ADD_PERSON_START`
 export const ADD_PERSON_SUCCESS = `${prefix}/ADD_PERSON_SUCCESS`
 
+export const DELETE_PERSON = `${prefix}/DELETE_PERSON`
+export const DELETE_PERSON_START = `${prefix}/DELETE_PERSON_START`
+export const DELETE_PERSON_SUCCESS = `${prefix}/DELETE_PERSON_SUCCESS`
+
 export const FETCH_ALL_REQUEST = `${prefix}/FETCH_ALL_REQUEST`
 export const FETCH_ALL_SUCCESS = `${prefix}/FETCH_ALL_SUCCESS`
 
@@ -43,6 +47,9 @@ export default function reducer(state = new ReducerState(), action) {
   switch (type) {
     case ADD_PERSON_SUCCESS:
       return state.setIn(['entities', payload.uid], new PersonRecord(payload))
+
+    case DELETE_PERSON_SUCCESS:
+      return state.deleteIn(['entities', payload.uid])
 
     case ADD_EVENT_SUCCESS:
       return state.updateIn(
@@ -91,6 +98,13 @@ export function addPerson(person) {
   }
 }
 
+export function deletePerson(uid) {
+  return {
+    type: DELETE_PERSON,
+    payload: { uid }
+  }
+}
+
 export function fetchAllPeople() {
   return {
     type: FETCH_ALL_REQUEST
@@ -126,6 +140,22 @@ export function* addPersonSaga(action) {
   yield put(reset('person'))
 }
 
+export function* deletePersonSaga({ payload: { uid } }) {
+  yield put({
+    type: DELETE_PERSON_START,
+    payload: { uid }
+  })
+
+  const personRef = firebase.database().ref(`people/${uid}`)
+
+  yield call([personRef, personRef.remove])
+
+  yield put({
+    type: DELETE_PERSON_SUCCESS,
+    payload: { uid }
+  })
+}
+
 export function* fetchAllSaga() {
   const peopleRef = firebase.database().ref('people')
 
@@ -158,6 +188,7 @@ export function* addEventToPersonSaga({ payload: { eventUid, personUid } }) {
 export const saga = function*() {
   yield all([
     takeEvery(ADD_PERSON, addPersonSaga),
+    takeEvery(DELETE_PERSON, deletePersonSaga),
     takeEvery(FETCH_ALL_REQUEST, fetchAllSaga),
     takeEvery(ADD_EVENT, addEventToPersonSaga)
   ])
