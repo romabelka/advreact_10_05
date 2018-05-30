@@ -5,6 +5,7 @@ import { put, call, all, takeEvery } from 'redux-saga/effects'
 import { reset } from 'redux-form'
 import firebase from 'firebase/app'
 import { fbToEntities } from './utils'
+import conferences from '../mocks/conferences'
 
 /**
  * Constants
@@ -12,6 +13,8 @@ import { fbToEntities } from './utils'
 export const moduleName = 'people'
 const prefix = `${appName}/${moduleName}`
 export const ADD_PERSON = `${prefix}/ADD_PERSON`
+export const DELETE_PERSON = `${prefix}/DELETE_PERSON`
+export const DELETE_PERSON_SUCCESS = `${prefix}/DELETE_PERSON_SUCCESS`
 export const ADD_PERSON_START = `${prefix}/ADD_PERSON_START`
 export const ADD_PERSON_SUCCESS = `${prefix}/ADD_PERSON_SUCCESS`
 
@@ -45,6 +48,9 @@ export default function reducer(state = new ReducerState(), action) {
     case FETCH_ALL_SUCCESS:
       return state.set('entities', fbToEntities(payload, PersonRecord))
 
+    case DELETE_PERSON_SUCCESS:
+      return state.deleteIn(['entities', payload.personUid])
+
     default:
       return state
   }
@@ -76,6 +82,13 @@ export function addPerson(person) {
   return {
     type: ADD_PERSON,
     payload: { person }
+  }
+}
+
+export function deletePerson(personUid) {
+  return {
+    type: DELETE_PERSON,
+    payload: { personUid }
   }
 }
 
@@ -114,6 +127,20 @@ export function* addPersonSaga(action) {
   yield put(reset('person'))
 }
 
+export function* deletePersonSaga(action) {
+  const { personUid } = action.payload
+  const personRef = firebase.database().ref(`/people/${personUid}/`)
+  try {
+    yield call([personRef, personRef.remove])
+    yield put({
+      type: DELETE_PERSON_SUCCESS,
+      payload: { personUid: personUid }
+    })
+  } catch (e) {
+    console.log('Точно Горец')
+  }
+}
+
 export function* fetchAllSaga() {
   const peopleRef = firebase.database().ref('people')
 
@@ -125,9 +152,17 @@ export function* fetchAllSaga() {
   })
 }
 
+export function* addPersonEventSaga(action) {
+  const { personUid, eventUid } = action.payload
+  const peopleRef = firebase.database().ref(`/people/${personUid}/events/`)
+  yield call([peopleRef, peopleRef.push], eventUid)
+}
+
 export const saga = function*() {
   yield all([
     takeEvery(ADD_PERSON, addPersonSaga),
+    takeEvery(DELETE_PERSON, deletePersonSaga),
+    takeEvery(ADD_EVENT, addPersonEventSaga),
     takeEvery(FETCH_ALL_REQUEST, fetchAllSaga)
   ])
 }
