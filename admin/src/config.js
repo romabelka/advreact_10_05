@@ -1,4 +1,6 @@
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/database'
 
 export const appName = 'reactadv-77667'
 
@@ -10,5 +12,6 @@ export const config = {
     storageBucket: "reactadv-77667.appspot.com",
     messagingSenderId: "501419585080"
 };
+
 
 firebase.initializeApp(config)
