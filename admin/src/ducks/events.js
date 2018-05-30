@@ -19,6 +19,9 @@ export const FETCH_LAZY_REQUEST = `${prefix}/FETCH_LAZY_REQUEST`
 export const FETCH_LAZY_START = `${prefix}/FETCH_LAZY_START`
 export const FETCH_LAZY_SUCCESS = `${prefix}/FETCH_LAZY_SUCCESS`
 
+export const DELETE_EVENT = `${prefix}/DELETE_EVENT`
+export const DELETE_EVENT_SUCCESS = `${prefix}/DELETE_EVENT_SUCCESS`
+
 export const TOGGLE_SELECTION = `${prefix}/TOGGLE_SELECTION`
 
 /**
@@ -69,6 +72,10 @@ export default function reducer(state = new ReducerRecord(), action) {
             ? selected.remove(payload.uid)
             : selected.add(payload.uid)
       )
+    case DELETE_EVENT_SUCCESS:
+      return state
+        .deleteIn(['entities', payload.eventUid])
+        .deleteIn(['selected', payload.eventUid])
 
     default:
       return state
@@ -113,6 +120,13 @@ export const selectedEventsSelector = createSelector(
 export function fetchAllEvents() {
   return {
     type: FETCH_ALL_REQUEST
+  }
+}
+
+export function deleteEvent(eventUid) {
+  return {
+    type: DELETE_EVENT,
+    payload: { eventUid }
   }
 }
 
@@ -179,6 +193,22 @@ export const fetchLazySaga = function*() {
   }
 }
 
+function* deleteEventSaga(action) {
+  const { eventUid } = action.payload
+  try {
+    // @TODO нужно было чисить по юзерам ?
+    const eventRef = firebase.database().ref(`/events/${eventUid}`)
+    yield call([eventRef, eventRef.remove])
+    yield put({ type: DELETE_EVENT_SUCCESS, payload: { eventUid: eventUid } })
+  } catch (e) {
+    console.log('Этот эвент не смоет и цунами')
+  }
+}
+
 export function* saga() {
-  yield all([takeEvery(FETCH_ALL_REQUEST, fetchAllSaga), fetchLazySaga()])
+  yield all([
+    takeEvery(FETCH_ALL_REQUEST, fetchAllSaga),
+    takeEvery(DELETE_EVENT, deleteEventSaga),
+    fetchLazySaga()
+  ])
 }

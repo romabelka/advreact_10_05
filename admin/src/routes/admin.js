@@ -9,7 +9,7 @@ class AdminPage extends Component {
   render() {
     return (
       <div>
-        <h1>Admin Page</h1>
+        <h1> Admin Page </h1>
         <Route path="/admin/people" component={PersonPage} />
         <Route path="/admin/events" component={EventsPage} />
       </div>
