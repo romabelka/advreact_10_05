@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { DropTarget, DragSource } from 'react-dnd'
+import { DropTarget } from 'react-dnd'
 import { connect } from 'react-redux'
-import { addEventToPerson } from '../../ducks/people'
+import { deleteItemByType } from '../../ducks/cart'
 
-class SelectedEventCard extends Component {
+class Cart extends Component {
   static propTypes = {}
 
   render() {
@@ -11,8 +11,7 @@ class SelectedEventCard extends Component {
     const borderColor = canReceive ? (hovered ? 'green' : 'red') : 'black'
     return connectDropTarget(
       <div style={{ border: `1px solid ${borderColor}` }}>
-        <h3>{event.title}</h3>
-        <h4>{event.where}</h4>
+        <h1>🛒</h1>
       </div>
     )
   }
@@ -20,8 +19,8 @@ class SelectedEventCard extends Component {
 
 const spec = {
   drop(props, monitor) {
-    const { addEventToPerson, event } = props
-    addEventToPerson(event.uid, monitor.getItem().uid)
+    const { deleteItemByType } = props
+    deleteItemByType(monitor.getItem().uid)
   }
 }
 
@@ -31,6 +30,6 @@ const collect = (connect, monitor) => ({
   hovered: monitor.isOver()
 })
 
-export default connect(null, { addEventToPerson })(
-  DropTarget(['person'], spec, collect)(SelectedEventCard)
+export default connect(null, { deleteItemByType })(
+  DropTarget(['person', 'event'], spec, collect)(Cart)
 )
