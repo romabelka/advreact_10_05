@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { DropTarget, DragSource } from 'react-dnd'
+import { DropTarget } from 'react-dnd'
 import { connect } from 'react-redux'
 import { addEventToPerson } from '../../ducks/people'
 

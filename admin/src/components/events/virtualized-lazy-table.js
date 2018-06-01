@@ -8,6 +8,7 @@ import {
   eventListSelector
 } from '../../ducks/events'
 import { Table, Column, InfiniteLoader } from 'react-virtualized'
+import DragTableCell from './drag-table-row'
 import 'react-virtualized/styles.css'
 
 export class EventLazyTable extends Component {
@@ -39,7 +40,12 @@ export class EventLazyTable extends Component {
             onRowsRendered={onRowsRendered}
             rowClassName="test__event_table_row"
           >
-            <Column label="title" dataKey="title" width={300} />
+            <Column
+              label="title"
+              cellRenderer={this.cellRenderer}
+              dataKey="title"
+              width={300}
+            />
             <Column label="where" dataKey="where" width={250} />
             <Column label="when" dataKey="month" width={150} />
           </Table>
@@ -62,6 +68,10 @@ export class EventLazyTable extends Component {
     const { toggleSelection } = this.props
     toggleSelection && toggleSelection(rowData.uid)
   }
+
+  cellRenderer = (props) => (
+    <DragTableCell key={props.key} event={props.rowData} />
+  )
 }
 
 export default connect(

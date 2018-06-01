@@ -1,10 +1,7 @@
 import { appName } from '../config'
 import { Record, OrderedMap } from 'immutable'
-import { createSelector } from 'reselect'
-import { put, call, all, takeEvery, select } from 'redux-saga/effects'
-import { reset } from 'redux-form'
+import { put, call, all, takeEvery } from 'redux-saga/effects'
 import firebase from 'firebase/app'
-import { fbToEntities } from './utils'
 
 /**
  * Constants
@@ -18,28 +15,16 @@ export const DELETE_ITEM_SUCCESS = `${prefix}/DELETE_ITEM_SUCCESS`
  * Reducer
  * */
 const ReducerState = Record({
-  entities: new OrderedMap({})
-})
-
-const PersonRecord = Record({
-  uid: null,
-  firstName: null,
-  lastName: null,
-  email: null,
-  events: []
+  elements: new OrderedMap({})
 })
 
 export default function reducer(state = new ReducerState(), action) {
-  const { type, payload } = action
+  const { type } = action
 
   switch (type) {
     case DELETE_ITEM_SUCCESS:
-      // return state.updateIn(
-      //   ['entities', payload.personUid, 'events'],
-      //   (events) => [...new Set([...events, payload.eventUid])]
-      // )
+      // можно ли при данном подходе пропатчить список events или people?
       return state
-
     default:
       return state
   }
@@ -48,34 +33,15 @@ export default function reducer(state = new ReducerState(), action) {
 /**
  * Selectors
  * */
-export const stateSelector = (state) => state[moduleName]
-export const entitiesSelector = createSelector(
-  stateSelector,
-  (state) => state.entities
-)
-export const peopleSelector = createSelector(entitiesSelector, (entities) =>
-  entities.valueSeq().toArray()
-)
-export const idSelector = (_, props) => props.uid
-export const personSelector = createSelector(
-  entitiesSelector,
-  idSelector,
-  (entities, uid) => entities.get(uid)
-)
-
-export const personEventsSelector = createSelector(
-  personSelector,
-  (person) => person.events
-)
 
 /**
  * Action Creators
  * */
 
-export function deleteItemByType(eventUid, personUid) {
+export function deleteItemByType(itemUid, type) {
   return {
     type: DELETE_ITEM,
-    payload: { eventUid, personUid }
+    payload: { itemUid, type }
   }
 }
 
@@ -84,12 +50,10 @@ export function deleteItemByType(eventUid, personUid) {
  */
 
 export function* deleteItemByTypeSaga(action) {
-  // const { eventUid, personUid } = action.payload
-  // const eventsRef = firebase.database().ref(`people/${personUid}/events`)
-  // const events = yield select(personEventsSelector, { uid: personUid })
-  // const nextPersonEvents = [...new Set([...events, eventUid])]
-  //
-  // yield call([eventsRef, eventsRef.set], nextPersonEvents)
+  const { itemUid, type } = action.payload
+  const itemRef = firebase.database().ref(`${type}/${itemUid}`)
+
+  yield call([itemRef, itemRef.remove], '')
 
   yield put({
     type: DELETE_ITEM_SUCCESS,

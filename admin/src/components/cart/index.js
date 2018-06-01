@@ -7,11 +7,15 @@ class Cart extends Component {
   static propTypes = {}
 
   render() {
-    const { event, connectDropTarget, canReceive, hovered } = this.props
+    const { connectDropTarget, canReceive, hovered } = this.props
     const borderColor = canReceive ? (hovered ? 'green' : 'red') : 'black'
     return connectDropTarget(
       <div style={{ border: `1px solid ${borderColor}` }}>
-        <h1>🛒</h1>
+        <h1>
+          <span role="img" aria-label="cart">
+            🛒
+          </span>
+        </h1>
       </div>
     )
   }
@@ -20,7 +24,7 @@ class Cart extends Component {
 const spec = {
   drop(props, monitor) {
     const { deleteItemByType } = props
-    deleteItemByType(monitor.getItem().uid)
+    deleteItemByType(monitor.getItem().uid, monitor.getItem().type)
   }
 }
 
