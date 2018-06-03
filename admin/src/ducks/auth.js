@@ -2,7 +2,16 @@ import { appName } from '../config'
 import { Record } from 'immutable'
 import firebase from 'firebase/app'
 import { createSelector } from 'reselect'
-import { all, call, apply, put, takeEvery, take } from 'redux-saga/effects'
+import {
+  all,
+  call,
+  apply,
+  put,
+  takeEvery,
+  take,
+  spawn
+} from 'redux-saga/effects'
+import { eventChannel } from 'redux-saga'
 
 /**
  * Constants
@@ -114,15 +123,27 @@ export function* signInSaga() {
   yield put({ type: SIGN_IN_REQUESTS_LIMIT })
 }
 
-export function* saga() {
-  yield all([takeEvery(SIGN_UP_REQUEST, signUpSaga), signInSaga()])
+const createAuthChanel = () =>
+  eventChannel((emit) => {
+    const callback = (user) => emit({ user })
+    return firebase.auth().onAuthStateChanged(callback)
+  })
+
+export function* realtimeSyncSaga() {
+  const chanel = yield call(createAuthChanel)
+
+  while (true) {
+    const { user } = yield take(chanel)
+
+    yield put({
+      type: SIGN_IN_SUCCESS,
+      payload: { user }
+    })
+  }
 }
 
-firebase.auth().onAuthStateChanged((user) => {
-  if (!user) return
+export function* saga() {
+  yield spawn(realtimeSyncSaga)
 
-  window.store.dispatch({
-    type: SIGN_IN_SUCCESS,
-    payload: { user }
-  })
-})
+  yield all([takeEvery(SIGN_UP_REQUEST, signUpSaga), signInSaga()])
+}
