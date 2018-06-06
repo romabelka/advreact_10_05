@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { peopleSelector, fetchAllPeople } from '../../ducks/people'
 import { List } from 'react-virtualized'
-import PersonCard from './person-card'
 import { TransitionMotion, spring } from 'react-motion'
+import PersonCard from './person-card'
 
 import 'react-virtualized/styles.css'
 
@@ -14,50 +14,47 @@ class PeopleList extends Component {
 
   render() {
     return (
-      <List
-        rowRenderer={this.rowRenderer}
-        rowCount={this.props.people.length}
-        rowHeight={150}
-        height={400}
-        width={400}
-      />
-    )
-  }
-
-  rowRenderer = ({ style, index, key }) => {
-    const person = this.props.people[index]
-    return (
       <TransitionMotion
         styles={this.getStyles()}
         willEnter={this.willEnter}
         willLeave={this.willLeave}
       >
         {(interpolated) => (
-          <div>
-            {interpolated.map((item) => (
-              <div style={item.style} key={item.key}>
-                <PersonCard person={person} />
-              </div>
-            ))}
-          </div>
+          <List
+            rowRenderer={this.rowRenderer(interpolated)}
+            rowCount={interpolated.length}
+            rowHeight={150}
+            height={400}
+            width={400}
+          />
         )}
       </TransitionMotion>
     )
   }
 
-  willEnter = () => ({
-    opacity: 0
-  })
+  rowRenderer = (interpolated) => ({ style, index }) => {
+    const item = interpolated[index]
+
+    return (
+      <div style={{ ...style, ...item.style }} key={item.key}>
+        <PersonCard person={item.data} />
+      </div>
+    )
+  }
 
   willLeave = () => ({
     opacity: spring(0, { stiffness: 15, dumping: 40 })
   })
 
-  getStyles() {
+  willEnter = () => ({
+    opacity: 0
+  })
+
+  getStyles = () => {
     return this.props.people.map((person) => ({
       key: person.uid,
       style: {
-        opacity: spring(1, { stiffness: 10, dumping: 30 })
+        opacity: spring(1, { stiffness: 20, dumping: 30 })
       },
       data: person
     }))
