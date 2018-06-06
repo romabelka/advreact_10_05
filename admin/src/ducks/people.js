@@ -210,6 +210,8 @@ export function* realtimeSyncSaga() {
   while (true) {
     const { data } = yield take(chanel)
 
+    console.log('people fetch')
+
     yield put({
       type: FETCH_ALL_SUCCESS,
       payload: data.val()
