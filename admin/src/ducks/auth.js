@@ -131,18 +131,20 @@ export function* signInSaga() {
 const createEventChannel = () =>
   eventChannel((emit) => {
     const callback = (user) => emit({ user })
+    const error = (error) => emit({ error })
 
-    return firebase.auth().onAuthStateChanged(callback)
+    return firebase.auth().onAuthStateChanged(callback, error)
   })
 
 export function* realtimeSyncSaga() {
   const channel = yield call(createEventChannel)
   while (true) {
-    const { user } = yield take(channel)
+    const { user, error } = yield take(channel)
 
-    console.log(123)
+    console.log('auth')
 
-    if (!user) return
+    if (!user) continue
+
     yield put({
       type: SIGN_IN_SUCCESS,
       payload: { user }
