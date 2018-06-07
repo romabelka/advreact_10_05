@@ -3,7 +3,7 @@ import { NavLink, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import SignInForm from '../components/auth/sign-in'
 import SignUpForm from '../components/auth/sign-up'
-import { signUp, signIn } from '../ducks/auth'
+import { signUp, signIn, signOut } from '../ducks/auth'
 
 class AuthPage extends Component {
   render() {
@@ -16,6 +16,13 @@ class AuthPage extends Component {
           </NavLink>
           <NavLink to="/auth/sign-up" activeStyle={{ color: 'red' }}>
             Sign Up
+          </NavLink>
+          <NavLink
+            to="/auth/sign-out"
+            onClick={this.signOut}
+            activeStyle={{ color: 'red' }}
+          >
+            Sign Out
           </NavLink>
         </div>
         <Route
@@ -31,10 +38,11 @@ class AuthPage extends Component {
   }
 
   signUp = ({ email, password }) => this.props.signUp(email, password)
+  signOut = () => this.props.signOut()
   signIn = ({ email, password }) => this.props.signIn(email, password)
 }
 
 export default connect(
   null,
-  { signUp, signIn }
+  { signUp, signIn, signOut }
 )(AuthPage)

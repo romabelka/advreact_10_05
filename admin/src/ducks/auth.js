@@ -28,9 +28,13 @@ export const SIGN_IN_SUCCESS = `${prefix}/SIGN_IN_SUCCESS`
 export const SIGN_IN_REQUEST = `${prefix}/SIGN_IN_REQUEST`
 export const SIGN_IN_ERROR = `${prefix}/SIGN_IN_ERROR`
 export const SIGN_IN_REQUESTS_LIMIT = `${prefix}/SIGN_IN_REQUESTS_LIMIT`
+
 export const SIGN_UP_REQUEST = `${prefix}/SIGN_UP_REQUEST`
 export const SIGN_UP_SUCCESS = `${prefix}/SIGN_UP_SUCCESS`
 export const SIGN_UP_ERROR = `${prefix}/SIGN_UP_ERROR`
+
+export const SIGN_OUT_REQUEST = `${prefix}/SIGN_OUT_REQUEST`
+export const SIGN_OUT_SUCCESS = `${prefix}/SIGN_OUT_SUCCESS`
 
 /**
  * Reducer
@@ -46,6 +50,9 @@ export default function reducer(state = new ReducerRecord(), action) {
     case SIGN_IN_SUCCESS:
     case SIGN_UP_SUCCESS:
       return state.set('user', payload.user)
+
+    case SIGN_OUT_SUCCESS:
+      return state.delete('user')
 
     default:
       return state
@@ -73,6 +80,12 @@ export function signIn(email, password) {
   return {
     type: SIGN_IN_REQUEST,
     payload: { email, password }
+  }
+}
+
+export function signOut() {
+  return {
+    type: SIGN_OUT_REQUEST
   }
 }
 /*
@@ -128,6 +141,14 @@ export function* signInSaga() {
   yield put({ type: SIGN_IN_REQUESTS_LIMIT })
 }
 
+export function* signOutSaga() {
+  const auth = firebase.auth()
+
+  yield call([auth, auth.signOut])
+
+  yield put({ type: SIGN_OUT_SUCCESS })
+}
+
 const createEventChannel = () =>
   eventChannel((emit) => {
     const callback = (user) => emit({ user })
@@ -143,7 +164,13 @@ export function* realtimeSyncSaga() {
 
     console.log('auth')
 
-    if (!user) continue
+    if (!user) {
+      console.log('nouser')
+      yield put({
+        type: SIGN_OUT_SUCCESS
+      })
+      continue
+    }
 
     yield put({
       type: SIGN_IN_SUCCESS,
@@ -155,7 +182,11 @@ export function* realtimeSyncSaga() {
 export function* saga() {
   yield spawn(realtimeSyncSaga)
 
-  yield all([takeEvery(SIGN_UP_REQUEST, signUpSaga), signInSaga()])
+  yield all([
+    takeEvery(SIGN_UP_REQUEST, signUpSaga),
+    takeEvery(SIGN_OUT_REQUEST, signOutSaga),
+    signInSaga()
+  ])
 }
 
 /*
