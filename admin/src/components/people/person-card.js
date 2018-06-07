@@ -11,12 +11,15 @@ class PersonCard extends Component {
   }
 
   render() {
-    const { person, connectDragSource } = this.props
+    const { person, style, connectDragSource } = this.props
     return (
-      <div style={{ height: 150 }}>
-        {connectDragSource(<h2>{person.firstName}</h2>)}
-        <h3>{person.lastName}</h3>
-        <h4>{person.email}</h4>
+      <div style={style}>
+        {connectDragSource(
+          <h1>
+            {person.firstName} <b>{person.lastName}</b>
+          </h1>
+        )}
+        <h3>{person.email}</h3>
       </div>
     )
   }
