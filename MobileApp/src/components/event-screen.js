@@ -58,15 +58,9 @@ class EventScreen extends Component {
                   this.setModalVisible(!this.state.modalVisible)
                 }}>
               </Button>
-             </View>
+            </View>
           </View>
         </Modal>
-        <Button
-          title="Удалить"
-          onPress={() =>
-            this.setModalVisible(true)
-          }
-        />
         <ScrollView>
           {fields.map((field, index) => {
               if (index % 2 === 0) {
@@ -76,6 +70,12 @@ class EventScreen extends Component {
             }
           )}
         </ScrollView>
+        <Button
+          title="Удалить"
+          onPress={() =>
+            this.setModalVisible(true)
+          }
+        />
       </View>
     )
   }
