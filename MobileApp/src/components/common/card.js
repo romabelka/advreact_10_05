@@ -21,11 +21,13 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
         padding: 5,
+
         shadowColor: '#000',
         shadowOffset: {
             width: 2, height: 2
         },
-        shadowOpacity: 0.5
+        shadowOpacity: 0.5,
+        elevation: 3,
     }
 })
 
