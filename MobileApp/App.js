@@ -24,12 +24,12 @@ const events = Object.entries(fixtures.events).map(([uid, event]) => ({...event,
   }
 }*/
 
-export default class App  extends React.Component {
+export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-
-        <EventScreen event = {events[0]}/>
+        <EventList events = {events}/>
+        {/*<EventScreen event = {events[0]}/>*/}
       </View>
     )
   }

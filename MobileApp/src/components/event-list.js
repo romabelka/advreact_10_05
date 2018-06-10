@@ -9,15 +9,31 @@ class EventList extends Component {
   static propTypes = {};
 
   render() {
+    const sections = Object
+      .entries(this.props.events
+        .reduce((acc, event) => {
+          const firstLetter = event.title[0].toUpperCase()
+          acc[firstLetter] = [...acc[firstLetter] || [], event.title]
+          return acc;
+        }, {}))
+      .map(([firstLetter, data]) => ({firstLetter, data}))
+      .sort((a, b) => a.firstLetter > b.firstLetter)
+
     return (
       <SectionList
         renderItem={({item, index, section}) =>
-            <Text key={index} onPress={() => alert(123)}>{item}</Text>
+          <Text key={index}
+                onPress={() => alert(item)}
+                style = {styles.item}
+          >{item}
+          </Text>
         }
-        renderSectionHeader={({section: {title}}) => (
-          <Text style={{fontWeight: 'bold'}}>{title}</Text>
-        )}
-        sections={this.props.events.map(({title, where, when}) => ({title, data: [where, when]}))}
+        renderSectionHeader={({section: {firstLetter}}) =>
+          <View style={styles.firstLetterView}>
+            <Text style={styles.firstLetter}>{firstLetter}</Text>
+          </View>
+        }
+        sections={sections}
         keyExtractor={(item, index) => item + index}
       />
       /*
@@ -33,12 +49,26 @@ class EventList extends Component {
     )
   }
 
-  openEvent() {
-    console.log(123)
-  }
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  firstLetter: {
+    textAlign: 'center',
+    margin: 5,
+    fontSize: 20,
+    fontFamily: 'HelveticaNeue-Bold',
+  },
+  firstLetterView: {
+    backgroundColor: '#fff'
+  },
+  item : {
+    margin: 5,
+    fontSize: 15,
+    paddingLeft: 10,
+    paddingRight: 10,
+    fontFamily: 'HelveticaNeue-Light',
+  }
+})
 
 
 export default EventList

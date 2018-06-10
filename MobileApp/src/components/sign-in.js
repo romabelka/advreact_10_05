@@ -59,7 +59,7 @@ const styles = {
                 borderBottomColor: '#000'
             },
             android: {
-                
+              elevation: 2
             }
         })
     }
