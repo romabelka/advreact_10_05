@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {ScrollView, StyleSheet, Text} from 'react-native'
+import {SectionList, StyleSheet, Text} from 'react-native'
 import Card from './common/card'
 
 class EventList extends Component {
@@ -8,14 +8,33 @@ class EventList extends Component {
     };
 
     render() {
+        const eventsGroupedByFirstLetter = this.props.events.reduce(
+            (acc, event) => {
+                const firstLetter = event.title.charAt(0).toUpperCase()
+                return {
+                    ...acc,
+                    [firstLetter]: [...(acc[firstLetter] || []), event]
+                }
+            },
+            {}
+        )
+        const sections = Object.entries(eventsGroupedByFirstLetter).map(
+            ([title, data]) => ({ title, data })
+        )
+
         return (
-            <ScrollView>
-                {this.props.events.map(event =>
-                    <Card key = {event.uid}>
-                        <Text>{event.title}</Text>
+            <SectionList
+                renderItem={({ item, index }) => (
+                    <Card key={index}>
+                        <Text>{item.title}</Text>
                     </Card>
                 )}
-            </ScrollView>
+                renderSectionHeader={({ section: { title } }) => (
+                    <Text>{title}</Text>
+                )}
+                sections={sections}
+                keyExtractor={(item, index) => item.uid + index}
+            />
         )
     }
 }
