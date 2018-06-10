@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {Text, SectionList} from 'react-native'
+import Card from './common/card'
 
 class EventList extends Component {
   static propTypes = {};
@@ -27,7 +28,7 @@ class EventList extends Component {
     return (
 
       <SectionList
-        renderItem={({item}) => <Text key={item.uid}>{item.title}</Text>}
+        renderItem={({item}) => <Card key={item.uid}><Text>{item.title}</Text></Card>}
         renderSectionHeader={({section: {title}}) => (
           <Text style={{fontWeight: 'bold'}}>{title}</Text>
         )}
