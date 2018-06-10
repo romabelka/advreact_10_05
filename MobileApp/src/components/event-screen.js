@@ -1,12 +1,19 @@
 import React, {Component} from 'react'
-import {Text, ScrollView, View, StyleSheet, Button} from 'react-native'
+import {Text, ScrollView, View, StyleSheet, Button, Modal} from 'react-native'
 
 class EventScreen extends Component {
   static propTypes = {};
 
+  state = {
+    modalVisible: false,
+  };
+
+  setModalVisible(visible) {
+    this.setState({modalVisible: visible});
+  }
+
   render() {
 
-    const {navigate} = this.props.navigation
     const item = this.props.navigation.getParam('item', {});
     const fields = Object.keys(item).reduce(
       (acc, key) => {
@@ -20,10 +27,44 @@ class EventScreen extends Component {
     return (
 
       <View>
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            alert('Modal has been closed.');
+          }}>
+          <View style={{margin: 10}}>
+            <View>
+              <Text>Удалить это мероприятие?</Text>
+
+              <Button
+                title="Нет"
+                onPress={() => {
+                  this.setModalVisible(!this.state.modalVisible)
+                }}>
+              </Button>
+              <Text></Text>
+              <Button
+                title="Ни в коем случае"
+                onPress={() => {
+                  this.setModalVisible(!this.state.modalVisible)
+                }}>
+              </Button>
+              <Text></Text>
+              <Button
+                title="Никогда"
+                onPress={() => {
+                  this.setModalVisible(!this.state.modalVisible)
+                }}>
+              </Button>
+             </View>
+          </View>
+        </Modal>
         <Button
-          title="Events"
+          title="Удалить"
           onPress={() =>
-            navigate('List')
+            this.setModalVisible(true)
           }
         />
         <ScrollView>
