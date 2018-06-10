@@ -18,4 +18,7 @@ class PersonPage extends Component {
   }
 }
 
-export default connect(null, { addPerson })(PersonPage)
+export default connect(
+  null,
+  { addPerson }
+)(PersonPage)
