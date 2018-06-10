@@ -10,7 +10,6 @@ import img from './assets/images/logo.png'
 const events = Object.entries(fixtures.events).map(([uid, event]) => ({...event, uid}))
 
 const groupedEvents = Object.entries(fixtures.events).reduce( (acc, [uid, event]) => {
-  console.log(event);
   const firstChar = event.title[0].toLowerCase();
   if(firstChar in acc) {
     acc[firstChar].push({...event, uid})
