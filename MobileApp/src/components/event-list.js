@@ -24,11 +24,20 @@ class EventList extends Component {
       },
       []
     )
-
+    const {navigate} = this.props.navigation
     return (
 
       <SectionList
-        renderItem={({item}) => <Card key={item.uid}><Text>{item.title}</Text></Card>}
+        renderItem={({item}) => <Card key={item.uid}
+        ><Text
+          navigation={this.props.navigation}
+          onPress={() =>
+            navigate('Card', {
+              item: item,
+              navigation: this.props.navigation
+            })
+          }
+        >{item.title}</Text></Card>}
         renderSectionHeader={({section: {title}}) => (
           <Text style={{fontWeight: 'bold'}}>{title}</Text>
         )}
