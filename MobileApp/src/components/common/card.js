@@ -7,8 +7,8 @@ class Card extends Component {
     };
 
     render() {
-        return (
-            <View style = {styles.container}>
+      return (
+            <View style = {styles.container} >
                 {this.props.children}
             </View>
         )
@@ -25,7 +25,9 @@ const styles = StyleSheet.create({
         shadowOffset: {
             width: 2, height: 2
         },
-        shadowOpacity: 0.5
+        shadowOpacity: 0.5,
+        elevation: 3
+
     }
 })
 
