@@ -1,8 +1,9 @@
 import React from 'react';
 import { StyleSheet, View, Image } from 'react-native';
-//import SignIn from './src/components/sign-in'
+import SignIn from './src/components/sign-in'
 //import HelloWorld from './src/hello-world'
-import EventList from './src/components/event-list'
+import EventList from './src/components/events/event-list'
+import EventScreen from './src/components/events/event-screen'
 import fixtures from './fixtures.json'
 import img from './assets/images/logo.png'
 
@@ -17,7 +18,7 @@ export default class App extends React.Component {
                  source = {img}
                  resizeMode = {Image.resizeMode.contain}
           />
-          <EventList events = {events}/>
+          <EventScreen event = {events[0]}/>
       </View>
     );
   }
