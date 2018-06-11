@@ -1,4 +1,5 @@
 import {configure} from 'mobx'
+import {Provider} from 'mobx-react'
 
 configure({enforceActions: true})
 
@@ -18,7 +19,9 @@ const events = Object.entries(fixtures.events).map(([uid, event]) => ({...event,
 
 export default class App extends React.Component {
     render() {
-        return <AppNavigator ref={this.setNavRef}/>
+        return <Provider {...stores}>
+            <AppNavigator ref={this.setNavRef}/>
+        </Provider>
     }
 
     setNavRef = (ref) => {

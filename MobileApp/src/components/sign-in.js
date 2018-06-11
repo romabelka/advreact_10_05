@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import {View, Text, TextInput, TouchableOpacity, Platform} from 'react-native'
-import {observer} from 'mobx-react'
-import {userStore} from '../stores'
+import {observer, inject} from 'mobx-react'
 
+@inject('user')
 @observer
 class SignIn extends Component {
     render() {
@@ -12,7 +12,7 @@ class SignIn extends Component {
                 <View>
                     <Text>Email:</Text>
                     <TextInput
-                        value = {userStore.email}
+                        value = {this.props.user.email}
                         style = {styles.input}
                         onChangeText = {this.handleEmailChange}
                         keyboardType = 'email-address'
@@ -20,9 +20,9 @@ class SignIn extends Component {
                 </View>
                 <View>
                     <Text>Password:</Text>
-                    <Text>isValidPassowrd: {userStore.isValidPassword}</Text>
+                    <Text>isValidPassowrd: {this.props.user.isValidPassword}</Text>
                     <TextInput
-                        value = {userStore.password}
+                        value = {this.props.user.password}
                         style = {styles.input}
                         onChangeText = {this.handlePasswordChange}
                         secureTextEntry
@@ -35,10 +35,10 @@ class SignIn extends Component {
         )
     }
 
-    handleEmailChange = userStore.setEmail
-    handlePasswordChange = userStore.setPassword
+    handleEmailChange = this.props.user.setEmail
+    handlePasswordChange = this.props.user.setPassword
 
-    handleSubmit = userStore.signIn
+    handleSubmit = this.props.user.signIn
 }
 
 const styles = {
