@@ -17,7 +17,7 @@ class EventList extends Component {
         return <SectionList
             sections = {sections}
             renderSectionHeader = {({section}) => <Text style={styles.header}>{section.title}</Text>}
-            renderItem = {({item}) => <EventCard event = {item.event} />}
+            renderItem = {({item}) => <EventCard event = {item.event} key = {item.key} />}
         />
     }
 }

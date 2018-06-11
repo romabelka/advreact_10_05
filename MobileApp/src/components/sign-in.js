@@ -40,7 +40,9 @@ class SignIn extends Component {
     handleEmailChange = email => this.setState({ email })
     handlePasswordChange = password => this.setState({ password })
 
-    handleSubmit = () => console.log('---', this.state)
+    handleSubmit = () => {
+        this.props.onSignIn()
+    }
 }
 
 const styles = {
