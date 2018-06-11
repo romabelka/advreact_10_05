@@ -2,6 +2,10 @@ import {observable, computed, action} from 'mobx'
 import firebase from 'firebase/app'
 
 export default class UserStore {
+    constructor(navigationStore) {
+        this.navigationStore = navigationStore
+    }
+
     @observable email = ''
     @observable password = ''
     @observable user = null
@@ -15,7 +19,11 @@ export default class UserStore {
 
     signIn = () => {
         firebase.auth().signInWithEmailAndPassword(this.email, this.password)
-            .then(user => this.user = user)
+            .then(user => {
+                this.user = user
+                console.log('---', 123)
+                this.navigationStore.navigate('eventList')
+            })
             .catch(error => console.error(error))
         this.user = {}
     }
