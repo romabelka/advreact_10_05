@@ -1,3 +1,6 @@
+import {configure} from 'mobx'
+configure({ enforceActions: true })
+
 import React from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 //import SignIn from './src/components/sign-in'
