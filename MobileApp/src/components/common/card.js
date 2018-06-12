@@ -17,7 +17,8 @@ class Card extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#DDD',
+        backgroundColor: '#FEFEFE',
+        elevation: 5,
         marginTop: 10,
         marginBottom: 10,
         padding: 5,
