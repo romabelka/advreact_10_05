@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View, Text, TextInput, Platform} from 'react-native'
+import {View, Text, TextInput, Platform, Button} from 'react-native'
 
 class SignIn extends Component {
     static propTypes = {
@@ -27,6 +27,11 @@ class SignIn extends Component {
                     onChangeText = {this.handlePasswordChange}
                     secureTextEntry
                 />
+                <Button
+                  onPress={() => {console.log('Login')}}
+                  title="Login"
+                  color="#841584"
+                />
             </View>
         )
     }
@@ -43,7 +48,7 @@ const styles = {
                 borderBottomColor: '#000'
             },
             android: {
-                
+
             }
         })
     }
