@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import {View, Text, Image, StyleSheet, Button} from 'react-native'
 import ConfirmModal from '../common/confirm-modal'
+import {observer, inject} from 'mobx-react'
 
+@inject('eventStore')
+@observer
 class Event extends Component {
     static propTypes = {
 
@@ -12,8 +15,9 @@ class Event extends Component {
     }
 
     render() {
-        const {event} = this.props
-        return (
+        const {event} = this.props.eventStore
+
+      return (
             <View style = {styles.container}>
                 <Text style = {[styles.text, styles.header]}>{event.title}</Text>
                 <View>

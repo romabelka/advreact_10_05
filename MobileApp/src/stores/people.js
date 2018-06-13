@@ -1,7 +1,7 @@
 import {observable, action} from 'mobx'
 import firebase from 'firebase/app'
 
-export default class EventListStore {
+export default class PeopleListStore {
 
     @observable people = []
     @observable loading = false;
