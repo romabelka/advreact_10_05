@@ -22,7 +22,7 @@ export default class UserStore {
             .then(user => {
                 this.user = user
                 console.log('---', 123)
-                this.navigationStore.navigate('eventList')
+                this.navigationStore.navigate('lists')
             })
             .catch(error => console.error(error))
         this.user = {}
