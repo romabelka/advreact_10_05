@@ -1,14 +1,14 @@
 import {createStackNavigator} from 'react-navigation'
 import AuthScreen from './screens/auth'
-import EventListScreen from './screens/event-list'
 import EventScreen from './screens/event'
+import TabNavigator from './tab-navigator'
 
 export default createStackNavigator({
-    auth: {
+      auth: {
         screen: AuthScreen
-    },
-    eventList: {
-        screen: EventListScreen
+      },
+    lists: {
+        screen: TabNavigator
     },
     event: {
         screen: EventScreen
