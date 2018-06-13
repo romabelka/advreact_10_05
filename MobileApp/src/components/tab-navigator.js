@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from 'react-navigation';
 import AuthScreen from './screens/auth'
 import EventListScreen from './screens/event-list'
-import EventScreen from './screens/event'
+import PeopleScreen from './screens/people'
 
 export default createBottomTabNavigator({
     auth: {
@@ -10,7 +10,7 @@ export default createBottomTabNavigator({
     eventList: {
         screen: EventListScreen
     },
-    event: {
-        screen: EventScreen
+    peopleList: {
+        screen: PeopleScreen
     }
 })
