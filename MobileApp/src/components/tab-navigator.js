@@ -1,13 +1,9 @@
-import {createStackNavigator} from 'react-navigation'
+import { createBottomTabNavigator } from 'react-navigation';
 import AuthScreen from './screens/auth'
 import EventListScreen from './screens/event-list'
 import EventScreen from './screens/event'
-import TabNavigator from './tab-navigator'
 
-export default createStackNavigator({
-    tabs: {
-        screen: TabNavigator
-    },
+export default createBottomTabNavigator({
     auth: {
         screen: AuthScreen
     },

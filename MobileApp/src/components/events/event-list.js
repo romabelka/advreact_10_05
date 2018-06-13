@@ -2,14 +2,22 @@ import React, { Component } from 'react'
 import {Text, StyleSheet, SectionList} from 'react-native'
 import EventCard from './event-card'
 import groupBy from 'lodash/groupBy'
+import {observer, inject} from 'mobx-react'
 
+@inject('eventList')
+@observer
 class EventList extends Component {
     static propTypes = {
 
     };
 
+
+      componentDidMount() {
+          this.props.eventList.loadEvents()
+      }
+
     render() {
-        const grouped = groupBy(this.props.events, event => event.title.charAt(0))
+        const grouped = groupBy(this.props.eventList.events, event => event.title.charAt(0))
         const sections = Object.entries(grouped).map(([letter, list]) => ({
             title: `${letter}, ${list.length} events`,
             data: list.map(event => ({key: event.uid, event}))
