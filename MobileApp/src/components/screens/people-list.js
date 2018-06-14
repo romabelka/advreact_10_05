@@ -1,28 +1,28 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import EventList from '../events/event-list'
+import PeopleList from '../people/people-list'
 import Loader from '../common/loader'
 
-@inject('events')
+@inject('people')
 @observer
-class EventListScreen extends Component {
+class PeopleListScreen extends Component {
   static propTypes = {}
 
   componentDidMount() {
-    if (!this.props.events.loading && !this.props.events.loaded) {
-      this.props.events.getAllEvents()
+    if (!this.props.people.loading && !this.props.people.loaded) {
+      this.props.people.getAllPeople()
     }
   }
 
   render() {
-    if (this.props.events.loading) {
+    if (this.props.people.loading) {
       return <Loader />
     }
     return (
       <View>
-        <Text style={styles.header}>Events list</Text>
-        <EventList events={this.props.events.entities} />
+        <Text style={styles.header}>People list</Text>
+        <PeopleList people={this.props.people.entities} />
       </View>
     )
   }
@@ -35,4 +35,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default EventListScreen
+export default PeopleListScreen
