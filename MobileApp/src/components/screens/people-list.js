@@ -3,13 +3,13 @@ import { View, Text, StyleSheet } from 'react-native'
 import EventList from '../events/event-list'
 import fixtures from '../../../fixtures.json'
 
-class EventListScreen extends Component {
+class PeopleListScreen extends Component {
   static propTypes = {}
 
   render() {
     return (
       <View>
-        <Text style={styles.header}>Events list</Text>
+        <Text style={styles.header}>People list</Text>
         <EventList
           events={Object.entries(fixtures.events).map(([uid, event]) => ({
             ...event,
@@ -28,4 +28,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default EventListScreen
+export default PeopleListScreen
