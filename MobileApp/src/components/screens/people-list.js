@@ -1,21 +1,28 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
-import EventList from '../events/event-list'
-import fixtures from '../../../fixtures.json'
+import { observer, inject } from 'mobx-react'
+import PeopleList from '../people/people-list'
+import Loader from '../common/loader'
 
+@inject('people')
+@observer
 class PeopleListScreen extends Component {
   static propTypes = {}
 
+  componentDidMount() {
+    if (!this.props.people.loading && !this.props.people.loaded) {
+      this.props.people.getAllPeople()
+    }
+  }
+
   render() {
+    if (this.props.people.loading) {
+      return <Loader />
+    }
     return (
       <View>
         <Text style={styles.header}>People list</Text>
-        <EventList
-          events={Object.entries(fixtures.events).map(([uid, event]) => ({
-            ...event,
-            uid
-          }))}
-        />
+        <PeopleList people={this.props.people.entities} />
       </View>
     )
   }

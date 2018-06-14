@@ -24,7 +24,6 @@ export default class UserStore {
       .signInWithEmailAndPassword(this.email, this.password)
       .then((user) => {
         this.user = user
-        console.log('---', 123)
         this.navigationStore.navigate('main')
       })
       .catch((error) => console.error(error))
