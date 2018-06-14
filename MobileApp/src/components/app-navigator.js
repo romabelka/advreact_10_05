@@ -3,6 +3,7 @@ import AuthScreen from './screens/auth'
 import EventList from './screens/event-list'
 import PeopleList from './screens/people-list'
 import EventScreen from './screens/event'
+import EventMapScreen from './screens/event-map'
 
 const ListsNavigator = createBottomTabNavigator({
     events: {
@@ -28,6 +29,6 @@ export default createStackNavigator({
         }
     },
     event: {
-        screen: EventScreen
+        screen: EventMapScreen
     }
 })
