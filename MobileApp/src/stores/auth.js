@@ -3,6 +3,12 @@ import firebase from 'firebase/app'
 import BasicStore from './basic-store'
 
 class AuthStore extends BasicStore {
+    constructor(...args) {
+        super(...args)
+
+        firebase.auth().onAuthStateChanged(action(user => this.user = user))
+    }
+
     @observable email = ''
     @observable password = ''
     @observable user = null
@@ -12,10 +18,6 @@ class AuthStore extends BasicStore {
 
     signIn = () => {
         firebase.auth().signInWithEmailAndPassword(this.email, this.password)
-            .then(action(user => {
-                this.user = user
-                this.getStore('navigation').navigate('lists')
-            }))
     }
 
 

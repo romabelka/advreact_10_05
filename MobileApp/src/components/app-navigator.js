@@ -16,10 +16,16 @@ const ListsNavigator = createBottomTabNavigator({
 
 export default createStackNavigator({
     auth: {
-        screen: AuthScreen
+        screen: AuthScreen,
+        navigationOptions: {
+            title: 'Auth'
+        }
     },
     lists: {
-        screen: ListsNavigator
+        screen: ListsNavigator,
+        navigationOptions: {
+            title: 'Lists'
+        }
     },
     event: {
         screen: EventScreen
