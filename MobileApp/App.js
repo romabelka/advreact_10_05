@@ -4,13 +4,8 @@ import {Provider} from 'mobx-react'
 configure({enforceActions: true})
 
 import React from 'react';
-import {StyleSheet, View, Image} from 'react-native';
-//import SignIn from './src/components/sign-in'
-//import HelloWorld from './src/hello-world'
-import EventList from './src/components/events/event-list'
-import EventScreen from './src/components/events/event-screen'
+import {StyleSheet} from 'react-native';
 import fixtures from './fixtures.json'
-import img from './assets/images/logo.png'
 import AppNavigator from './src/components/app-navigator'
 import stores from './src/stores'
 

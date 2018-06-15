@@ -10,14 +10,15 @@ class EventList extends Component {
     render() {
         return (
             <ScrollView>
-                {this.props.events.map(event =>
-                    <Card key = {event.uid}>
-                        <Text>{event.title}</Text>
-                    </Card>
-                )}
+                {this.props.events.map(this.getEvent)}
             </ScrollView>
         )
     }
+
+    getEvent = event =>
+        <Card key = {event.uid}>
+            <Text>{event.title}</Text>
+        </Card>
 }
 
 const styles = StyleSheet.create({

@@ -1,12 +1,14 @@
 import '../config'
-
-import UserStore from './user'
+import AuthStore from './auth'
 import NavigationStore from './navigation'
+import PeopleStore from './people'
+import EventsStore from './events'
 
-export const navigationStore = new NavigationStore
-export const userStore = new UserStore(navigationStore)
+const stores = {}
 
-export default {
-    user: userStore,
-    navigation: navigationStore
-}
+stores.auth = new AuthStore(stores)
+stores.navigation = new NavigationStore(stores)
+stores.people = new PeopleStore(stores)
+stores.events = new EventsStore(stores)
+
+export default stores
