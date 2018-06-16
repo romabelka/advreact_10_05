@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
-import { Camera, Permissions } from 'expo';
+import {Text, View, TouchableOpacity} from 'react-native';
+import {Camera, Permissions} from 'expo';
 
 export default class CameraScreen extends React.Component {
   state = {
@@ -8,21 +8,28 @@ export default class CameraScreen extends React.Component {
     type: Camera.Constants.Type.back,
   };
 
+  static navigationOptions = {
+    title: 'camera'
+  }
+
   async componentWillMount() {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({ hasCameraPermission: status === 'granted' });
+    const {status} = await Permissions.askAsync(Permissions.CAMERA);
+    this.setState({hasCameraPermission: status === 'granted'});
   }
 
   render() {
-    const { hasCameraPermission } = this.state;
+    const {hasCameraPermission} = this.state;
     if (hasCameraPermission === null) {
-      return <View />;
+      return <View/>;
     } else if (hasCameraPermission === false) {
       return <Text>No access to camera</Text>;
     } else {
       return (
-        <View style={{ flex: 1 }}>
-          <Camera style={{ flex: 1 }} type={this.state.type}>
+        <View style={{flex: 1}}>
+          <Camera style={{flex: 1}} type={this.state.type}
+                  ref={ref => {
+                    this.camera = ref;
+                  }}>
             <View
               style={{
                 flex: 1,
@@ -31,7 +38,7 @@ export default class CameraScreen extends React.Component {
               }}>
               <TouchableOpacity
                 style={{
-                  flex: 0.1,
+                  flex: 1,
                   alignSelf: 'flex-end',
                   alignItems: 'center',
                 }}
@@ -43,14 +50,44 @@ export default class CameraScreen extends React.Component {
                   });
                 }}>
                 <Text
-                  style={{ fontSize: 18, marginBottom: 10, color: 'white' }}>
+                  style={{fontSize: 18, marginBottom: 10, color: 'white'}}>
                   {' '}Flip{' '}
                 </Text>
               </TouchableOpacity>
+              <TouchableOpacity
+                onPress={this.snap}
+                style={{
+                  flex: 1,
+                  alignSelf: 'flex-end',
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{fontSize: 18, marginBottom: 10, color: 'white'}}>
+                  {' '}Snapshot{' '}
+                </Text>
+              </TouchableOpacity>
+              <Text
+                style={{
+                  flex: 1,
+                  alignSelf: 'flex-end',
+                  alignItems: 'center',
+                  fontSize: 18, marginBottom: 10, color: 'white'
+                }}>
+                {this.text}
+              </Text>
             </View>
           </Camera>
         </View>
       );
+
     }
   }
+
+  snap = async () => {
+    if (this.camera) {
+      let photo = await this.camera.takePictureAsync();
+      console.log(photo)
+      this.text = photo.height || ''
+    }
+  };
 }

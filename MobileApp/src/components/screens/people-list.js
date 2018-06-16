@@ -22,12 +22,16 @@ class PeopleListScreen extends Component {
     render() {
         const {people} = this.props
         if (people.loading) return this.getLoader()
-        return <PeopleList />
+        return <PeopleList onPersonPress = {this.handlePersonPress}/>
     }
 
     getLoader() {
         return <View><ActivityIndicator size='large'/></View>
     }
+
+  handlePersonPress = ({ uid }) => {
+    this.props.navigation.navigate('person', { uid })
+  }
 }
 
 const styles = StyleSheet.create({
