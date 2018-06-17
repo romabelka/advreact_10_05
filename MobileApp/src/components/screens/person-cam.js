@@ -1,12 +1,6 @@
 import React, { Component } from 'react'
-import {
-  Text,
-  StyleSheet,
-  View,
-  TouchableOpacity
-  // CameraRoll
-} from 'react-native'
-import { MapView, Permissions, Location, Camera, FileSystem } from 'expo'
+import { Text, StyleSheet, View, TouchableOpacity } from 'react-native'
+import { Permissions, Camera } from 'expo'
 import { observable, action } from 'mobx'
 import { observer } from 'mobx-react'
 import firebase from 'firebase/app'
