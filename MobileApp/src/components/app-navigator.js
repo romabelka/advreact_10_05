@@ -15,7 +15,7 @@ const ListsNavigator = createBottomTabNavigator({
     screen: PeopleList
   },
 /*  camera: {
-    screen: CameraScreen
+    screen: CameraScreen,
   }*/
 })
 
@@ -40,6 +40,7 @@ export default createStackNavigator({
     screen: PersonScreen
   },
   camera: {
-    screen: CameraScreen
-  }
+    screen: CameraScreen,
+
+  },
 })

@@ -1,6 +1,8 @@
 import React from 'react';
-import {Text, View, TouchableOpacity} from 'react-native';
+import {Text, View, TouchableOpacity, StatusBar} from 'react-native';
 import {Camera, Permissions} from 'expo';
+import firebase from 'firebase/app'
+
 
 export default class CameraScreen extends React.Component {
   state = {
@@ -9,7 +11,9 @@ export default class CameraScreen extends React.Component {
   };
 
   static navigationOptions = {
-    title: 'camera'
+    tabBarVisible: false,
+    header: null,
+    title: null
   }
 
   async componentWillMount() {
@@ -26,6 +30,9 @@ export default class CameraScreen extends React.Component {
     } else {
       return (
         <View style={{flex: 1}}>
+          <StatusBar
+            hidden
+          />
           <Camera style={{flex: 1}} type={this.state.type}
                   ref={ref => {
                     this.camera = ref;
@@ -36,6 +43,32 @@ export default class CameraScreen extends React.Component {
                 backgroundColor: 'transparent',
                 flexDirection: 'row',
               }}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.goBack()}
+                style={{
+                  flex: 1,
+                  alignSelf: 'flex-end',
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{fontSize: 18, marginBottom: 10, color: 'white'}}>
+                  {' '}Cancel{' '}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={this.snap}
+                style={{
+                  flex: 1,
+                  alignSelf: 'flex-end',
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{fontSize: 18, marginBottom: 10, color: 'white'}}>
+                  {' '}Snapshot{' '}
+                </Text>
+              </TouchableOpacity>
+
               <TouchableOpacity
                 style={{
                   flex: 1,
@@ -54,19 +87,8 @@ export default class CameraScreen extends React.Component {
                   {' '}Flip{' '}
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={this.snap}
-                style={{
-                  flex: 1,
-                  alignSelf: 'flex-end',
-                  alignItems: 'center',
-                }}>
-                <Text
-                  style={{fontSize: 18, marginBottom: 10, color: 'white'}}>
-                  {' '}Snapshot{' '}
-                </Text>
-              </TouchableOpacity>
-              <Text
+
+{/*              <Text
                 style={{
                   flex: 1,
                   alignSelf: 'flex-end',
@@ -74,7 +96,7 @@ export default class CameraScreen extends React.Component {
                   fontSize: 18, marginBottom: 10, color: 'white'
                 }}>
                 {this.text}
-              </Text>
+              </Text>*/}
             </View>
           </Camera>
         </View>
@@ -85,9 +107,16 @@ export default class CameraScreen extends React.Component {
 
   snap = async () => {
     if (this.camera) {
-      let photo = await this.camera.takePictureAsync();
-      console.log(photo)
-      this.text = photo.height || ''
+      const photo = await this.camera.takePictureAsync();
+      const avatar = firebase.storage().ref(photo.uri.replace(/.*\//ig, ''));
+      const file = await fetch(photo.uri)
+        .then(res => res.blob())
+
+      avatar.put(file).then(function(snapshot) {
+        console.log('Uploaded a blob or file!');
+      });
+
+      this.props.navigation.goBack()
     }
   };
 }

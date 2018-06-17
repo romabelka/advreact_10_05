@@ -21,7 +21,6 @@ class EntitiesStore extends BasicStore {
 export function loadAllHelper(refName) {
     return action(function () {
         this.loading = true
-
         firebase.database().ref(refName)
             .once('value', action(data => {
                 this.entities = entitiesFromFB(data.val())
