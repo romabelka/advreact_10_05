@@ -7,7 +7,7 @@ import firebase from 'firebase/app'
 export default class CameraScreen extends React.Component {
   state = {
     hasCameraPermission: null,
-    type: Camera.Constants.Type.back,
+    type: Camera.Constants.Type.front,
   };
 
   static navigationOptions = {
@@ -108,9 +108,19 @@ export default class CameraScreen extends React.Component {
   snap = async () => {
     if (this.camera) {
       const photo = await this.camera.takePictureAsync();
-      const avatar = firebase.storage().ref(photo.uri.replace(/.*\//ig, ''));
+      const { uid } = this.props.navigation.state.params
+      const fileName = photo.uri.replace(/.*\//ig, '')
+      const avatar = firebase
+        .storage()
+        .ref(`/avatars/${uid}`)
+        .child(fileName);
+
       const file = await fetch(photo.uri)
         .then(res => res.blob())
+
+      firebase.database().ref('people/' + uid).update({
+        avatar: fileName
+      });
 
       avatar.put(file).then(function(snapshot) {
         console.log('Uploaded a blob or file!');

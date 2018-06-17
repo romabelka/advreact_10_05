@@ -16,8 +16,8 @@ class PersonScreen extends Component {
     return <Person person = {this.props.people.entities[this.props.navigation.state.params.uid]} makePhoto = {this.makePhoto}/>
   }
 
-  makePhoto = () => {
-    this.props.navigation.navigate('camera')
+  makePhoto = ({uid}) => {
+    this.props.navigation.navigate('camera', { uid })
   }
 }
 

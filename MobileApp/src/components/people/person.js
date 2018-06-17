@@ -20,7 +20,7 @@ class Person extends Component {
         return (
             <View style = {styles.container}>
                 <Text style = {[styles.text, styles.header]}>{person.email}</Text>
-                <Button title = 'Make photo' onPress = {makePhoto}/>
+                <Button title = 'Make photo' onPress = {() => makePhoto(person)}/>
             </View>
         )
     }
