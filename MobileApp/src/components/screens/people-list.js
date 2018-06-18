@@ -22,11 +22,15 @@ class PeopleListScreen extends Component {
     render() {
         const {people} = this.props
         if (people.loading) return this.getLoader()
-        return <PeopleList />
+        return <PeopleList onLongPress = {this.handleLongPress}/>
     }
 
     getLoader() {
         return <View><ActivityIndicator size='large'/></View>
+    }
+
+    handleLongPress = uid => {
+        this.props.navigation.navigate('personPhoto', { uid })
     }
 }
 

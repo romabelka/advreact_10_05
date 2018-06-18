@@ -8,7 +8,6 @@ export default class NavigationStore extends BasicStore {
             const {user} = this.getStore('auth')
 
             this.reset(user ? 'lists' : 'auth')
-            console.log('---', 'user: ', user)
         })
     }
 
@@ -29,4 +28,8 @@ export default class NavigationStore extends BasicStore {
             })
         ]
     }))
+
+    goBack = () => {
+        this.ref.dispatch(NavigationActions.back())
+    }
 }
