@@ -4,8 +4,9 @@ import Card from '../common/card'
 import firebase from 'firebase/app'
 import {config} from '../../config'
 import {observable, action} from 'mobx'
-import {observer} from 'mobx-react'
+import { observer, inject } from 'mobx-react'
 
+@inject('people')
 @observer
 class PersonCard extends Component {
   static propTypes = {};
@@ -27,7 +28,6 @@ class PersonCard extends Component {
     const {email, firstName, lastName} = this.props.person
     const avatar = <Image source={{uri: this.avatarURL}} style={styles.avatar}/>
     const loader = <View style={styles.avatar}><ActivityIndicator size="large"/></View>
-
     return (
       <Card style={styles.container}>
           {this.loading || !this.loaded || !this.avatarURL ? loader : avatar}
@@ -38,8 +38,8 @@ class PersonCard extends Component {
       </Card>
     )
   }
+  async getAvatar({uid, avatar}) {
 
-  getAvatar = async ({uid, avatar}) => {
     if (!avatar) {
       await this.setAvatar('https://picsum.photos/200/100/?random')
     } else {
@@ -54,7 +54,6 @@ class PersonCard extends Component {
 
   }
 }
-
 
 const styles = StyleSheet.create({
   container: {

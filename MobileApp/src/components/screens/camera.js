@@ -2,8 +2,12 @@ import React from 'react';
 import {Text, View, TouchableOpacity, StatusBar} from 'react-native';
 import {Camera, Permissions} from 'expo';
 import firebase from 'firebase/app'
+import { observable, action } from 'mobx'
+import { observer, inject } from 'mobx-react'
 
 
+@inject('people')
+@observer
 export default class CameraScreen extends React.Component {
   state = {
     hasCameraPermission: null,
@@ -109,23 +113,7 @@ export default class CameraScreen extends React.Component {
     if (this.camera) {
       const photo = await this.camera.takePictureAsync();
       const { uid } = this.props.navigation.state.params
-      const fileName = photo.uri.replace(/.*\//ig, '')
-      const avatar = firebase
-        .storage()
-        .ref(`/avatars/${uid}`)
-        .child(fileName);
-
-      const file = await fetch(photo.uri)
-        .then(res => res.blob())
-
-      firebase.database().ref('people/' + uid).update({
-        avatar: fileName
-      });
-
-      avatar.put(file).then(function(snapshot) {
-        console.log('Uploaded a blob or file!');
-      });
-
+      this.props.people.saveAvatar(uid, photo)
       this.props.navigation.goBack()
     }
   };
